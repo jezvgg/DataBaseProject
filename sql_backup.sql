@@ -43,7 +43,7 @@ CREATE TABLE gosha.posts (
 
 -- Поправки температуры
 CREATE TABLE gosha.temperature_delta (
-	temperature numeric(8,2) NOT NULL ,
+	temperature numeric(8,2) NOT NULL PRIMARY KEY,
 	delta numeric(8,2) NOT NULL
 );
 
