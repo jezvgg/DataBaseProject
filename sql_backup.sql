@@ -136,6 +136,9 @@ DECLARE params gosha.interpolation;
 DECLARE delta numeric(8, 2);
 DECLARE our_temp numeric(8, 2) := 22;
 BEGIN
+    IF temperature > 40 THEN
+        RAISE EXCEPTION 'Error: impossible temrepature for artilery';
+    END IF; 
 	SELECT * FROM gosha.temperature_delta WHERE temperature <= our_temp ORDER BY temperature DESC LIMIT 1 INTO params.x1,params.y1;
 	SELECT * FROM gosha.temperature_delta WHERE temperature > our_temp ORDER BY temperature LIMIT 1 INTO params.x2,params.y2;
 	delta:= ((params.y1*params.x2 - params.y2*params.x1)/(params.x2-params.x1))+((params.y2 - params.y1)/(params.x2 - params.x1))*our_temp;
