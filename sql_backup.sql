@@ -1,20 +1,12 @@
-
-ALTER TABLE IF EXISTS ONLY gosha.users DROP CONSTRAINT IF EXISTS users_pkey;
-ALTER TABLE IF EXISTS ONLY gosha.posts DROP CONSTRAINT IF EXISTS posts_pkey;
-ALTER TABLE IF EXISTS ONLY gosha.inputs DROP CONSTRAINT IF EXISTS inputs_pkey;
-ALTER TABLE IF EXISTS ONLY gosha.history DROP CONSTRAINT IF EXISTS history_pkey;
-ALTER TABLE IF EXISTS ONLY gosha.devices DROP CONSTRAINT IF EXISTS devices_pkey;
-ALTER TABLE IF EXISTS ONLY gosha.achievements_types DROP CONSTRAINT IF EXISTS achievements_types_pkey;
-ALTER TABLE IF EXISTS ONLY gosha.achievements DROP CONSTRAINT IF EXISTS achievements_pkey1;
-ALTER TABLE IF EXISTS ONLY gosha.users_achievs DROP CONSTRAINT IF EXISTS achievements_pkey;
-DROP TABLE IF EXISTS gosha.users_achievs;
+DO $$
+BEGIN
+DROP TABLE IF EXISTS gosha.history;
 DROP TABLE IF EXISTS gosha.users;
 DROP TABLE IF EXISTS gosha.posts;
 DROP TABLE IF EXISTS gosha.inputs;
-DROP TABLE IF EXISTS gosha.history;
 DROP TABLE IF EXISTS gosha.devices;
-DROP TABLE IF EXISTS gosha.achievements_types;
-DROP TABLE IF EXISTS gosha.achievements;
+DROP TABLE IF EXISTS gosha.temperature_delta;
+DROP TYPE IF EXISTS gosha.interpolation;
 DROP SCHEMA IF EXISTS gosha;
 
 
@@ -25,47 +17,40 @@ CREATE SCHEMA gosha;
 ALTER SCHEMA gosha OWNER TO study;
 
 
-
-CREATE TABLE gosha.achievements (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    type_id uuid NOT NULL,
-    name character varying(100) NOT NULL
+-- Тип данных для интерполяции температуры
+CREATE TYPE gosha.interpolation AS
+(
+	x1 numeric(8, 2),
+	y1 numeric(8, 2),
+	x2 numeric(8, 2),
+	y2 numeric(8, 2)
 );
-ALTER TABLE gosha.achievements OWNER TO study;
 
 
-
-CREATE TABLE gosha.achievements_types (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying(100) NOT NULL
-);
-ALTER TABLE gosha.achievements_types OWNER TO study;
-
-
-
+-- Устройства измерения
 CREATE TABLE gosha.devices (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     name character varying(100) NOT NULL
 );
-ALTER TABLE gosha.devices OWNER TO study;
 
 
-
-CREATE TABLE gosha.history (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    user_id uuid NOT NULL,
-    input_id uuid NOT NULL,
-    data timestamp with time zone DEFAULT now() NOT NULL,
-    logitude numeric(4,2) NOT NULL,
-    latitude numeric(4,2) NOT NULL,
-    device_id uuid NOT NULL
+-- Должности
+CREATE TABLE gosha.posts (
+    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
+    name character varying(100) NOT NULL
 );
-ALTER TABLE gosha.history OWNER TO study;
 
 
+-- Поправки температуры
+CREATE TABLE gosha.temperature_delta (
+	temperature numeric(8,2) NOT NULL PRIMARY KEY,
+	delta numeric(8,2) NOT NULL
+);
 
+
+-- Введёные метео значения
 CREATE TABLE gosha.inputs (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     height numeric(8,2) NOT NULL,
     temperature numeric(8,2) NOT NULL,
     pressure numeric(8,2) NOT NULL,
@@ -73,50 +58,36 @@ CREATE TABLE gosha.inputs (
     wind_direction numeric(8,2) NOT NULL,
     bullet_speed numeric(8,2) NOT NULL
 );
-ALTER TABLE gosha.inputs OWNER TO study;
 
 
-
-CREATE TABLE gosha.posts (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    name character varying(100) NOT NULL
-);
-ALTER TABLE gosha.posts OWNER TO study;
-
-
+-- Пользователи
 CREATE TABLE gosha.users (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
+    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     post uuid NOT NULL,
     fullname character varying(100) NOT NULL,
-    age integer NOT NULL
+    age numeric(8,2) NOT NULL,
+	FOREIGN KEY (post) REFERENCES gosha.posts(id)
 );
-ALTER TABLE gosha.users OWNER TO study;
 
 
-
-CREATE TABLE gosha.users_achievs (
-    id uuid DEFAULT gen_random_uuid() NOT NULL,
-    achievement_id uuid NOT NULL,
-    user_id uuid NOT NULL
+-- История запросов
+CREATE TABLE gosha.history (
+    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
+    user_id uuid NOT NULL,
+    input_id uuid NOT NULL,
+    data timestamp with time zone DEFAULT now() NOT NULL,
+    logitude numeric(4,2) NOT NULL,
+    latitude numeric(4,2) NOT NULL,
+    device_id uuid NOT NULL,
+	FOREIGN KEY (user_id) REFERENCES gosha.users(id),
+	FOREIGN KEY (input_id) REFERENCES gosha.inputs(id),
+	FOREIGN KEY (device_id) REFERENCES gosha.devices(id)
 );
-ALTER TABLE gosha.users_achievs OWNER TO study;
 
 
-INSERT INTO gosha.achievements VALUES ('bcad8097-00a5-4714-8e90-346a672d0313', '65e6d057-d0f7-48a4-83be-c36dfc6bb0af', 'За боевые отличия');
-INSERT INTO gosha.achievements VALUES ('a415c9c0-123f-405c-a9c6-6b37eba833f1', 'c60c7710-3424-4da5-a1d8-9d48c6b48f99', '100 лет Военно-воздушной академии имени профессора Н. Е. Жуковского и Ю. А. Гагарина');
-INSERT INTO gosha.achievements VALUES ('13ef800c-e380-4538-b54c-66479435728e', '1df6e153-5b07-4443-8451-0846585ba6a2', 'Юридическая служба Вооружённых Сил Российской Федерации');
-INSERT INTO gosha.achievements VALUES ('a555798e-b403-439b-a193-cd9ba2f9af13', 'f50966c0-6ce5-431b-b155-0427a9a80a74', '50 лет Главному управлению глубоководных исследований');
-
-INSERT INTO gosha.achievements_types VALUES ('65e6d057-d0f7-48a4-83be-c36dfc6bb0af', 'медаль');
-INSERT INTO gosha.achievements_types VALUES ('c60c7710-3424-4da5-a1d8-9d48c6b48f99', 'юбилейная медаль');
-INSERT INTO gosha.achievements_types VALUES ('dd4c6dd7-2c0d-4106-8916-b2c6d0183e1f', 'знак');
-INSERT INTO gosha.achievements_types VALUES ('1df6e153-5b07-4443-8451-0846585ba6a2', 'знак отличия');
-INSERT INTO gosha.achievements_types VALUES ('f50966c0-6ce5-431b-b155-0427a9a80a74', 'памятный знак');
-
+-- Данные
 INSERT INTO gosha.devices VALUES ('b07940a1-c522-4b9c-90ba-771c6869d2d7', 'Десантный метео комплект');
 INSERT INTO gosha.devices VALUES ('c7237b8d-8b89-46ed-a774-f0c7f4ff7e32', 'Ветровое ружьё');
-
-INSERT INTO gosha.history VALUES ('51454263-3456-453d-a3f4-ee8bb373451d', '1fae05b2-3c7c-4faf-9d45-1393e6107166', '50f94903-a2f1-4992-81e2-e17659550494', '2025-02-03 13:56:27.489842+00', 36.66, 60.02, 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 
 INSERT INTO gosha.inputs VALUES ('50f94903-a2f1-4992-81e2-e17659550494', 100.00, 26.50, 750.00, 5.00, 0.20, 460.00);
 
@@ -141,28 +112,39 @@ INSERT INTO gosha.posts VALUES ('23e7bb05-42a2-43a5-b955-8ab531640057', 'Ген�
 INSERT INTO gosha.posts VALUES ('4e739c00-4ab5-4209-bd49-3801c82a15cd', 'Генерал армии');
 INSERT INTO gosha.posts VALUES ('9fef70a4-8da4-4ffc-9d4c-11367d7f18b9', 'Маршал России');
 
+INSERT INTO gosha.temperature_delta VALUES (-100, 0);
+INSERT INTO gosha.temperature_delta VALUES (-0.01, 0);
+INSERT INTO gosha.temperature_delta VALUES (0, 0.5);
+INSERT INTO gosha.temperature_delta VALUES (5, 0.5);
+INSERT INTO gosha.temperature_delta VALUES (10, 1);
+INSERT INTO gosha.temperature_delta VALUES (15, 1);
+INSERT INTO gosha.temperature_delta VALUES (20, 1.5);
+INSERT INTO gosha.temperature_delta VALUES (25, 2);
+INSERT INTO gosha.temperature_delta VALUES (30, 3.5);
+INSERT INTO gosha.temperature_delta VALUES (40, 4.5);
+INSERT INTO gosha.temperature_delta VALUES (100, 4.5);
+
 INSERT INTO gosha.users VALUES ('1fae05b2-3c7c-4faf-9d45-1393e6107166', 'e479b4ae-1366-4250-8a26-33078c554bc7', 'Воловиков Александр Сергеевич', 45);
 
-INSERT INTO gosha.users_achievs VALUES ('9d1335dc-f770-4cec-b9f7-e327589aae92', 'bcad8097-00a5-4714-8e90-346a672d0313', '1fae05b2-3c7c-4faf-9d45-1393e6107166');
-INSERT INTO gosha.users_achievs VALUES ('681d8f50-c3a9-41fc-b12e-bca78a6418cc', 'a415c9c0-123f-405c-a9c6-6b37eba833f1', '1fae05b2-3c7c-4faf-9d45-1393e6107166');
+INSERT INTO gosha.history VALUES ('51454263-3456-453d-a3f4-ee8bb373451d', '1fae05b2-3c7c-4faf-9d45-1393e6107166', '50f94903-a2f1-4992-81e2-e17659550494', '2025-02-03 13:56:27.489842+00', 36.66, 60.02, 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 
 
 
 
-ALTER TABLE ONLY gosha.users_achievs
-    ADD CONSTRAINT achievements_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.achievements
-    ADD CONSTRAINT achievements_pkey1 PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.achievements_types
-    ADD CONSTRAINT achievements_types_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.devices
-    ADD CONSTRAINT devices_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.history
-    ADD CONSTRAINT history_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.inputs
-    ADD CONSTRAINT inputs_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.posts
-    ADD CONSTRAINT posts_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY gosha.users
-    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+-- Начала всяких скриптов
+DECLARE params gosha.interpolation;
+DECLARE delta numeric(8, 2);
+DECLARE our_temp numeric(8, 2) := 22;
+BEGIN
+    IF temperature > 40 THEN
+        RAISE EXCEPTION 'Error: impossible temrepature for artilery';
+    END IF; 
+	SELECT * FROM gosha.temperature_delta WHERE temperature <= our_temp ORDER BY temperature DESC LIMIT 1 INTO params.x1,params.y1;
+	SELECT * FROM gosha.temperature_delta WHERE temperature > our_temp ORDER BY temperature LIMIT 1 INTO params.x2,params.y2;
+	delta:= ((params.y1*params.x2 - params.y2*params.x1)/(params.x2-params.x1))+((params.y2 - params.y1)/(params.x2 - params.x1))*our_temp;
 
+	RAISE NOTICE 'interolated delta: %', delta;
+END;
+	
+
+END$$;
