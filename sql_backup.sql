@@ -1,20 +1,24 @@
-DO $$
-BEGIN
 DROP TABLE IF EXISTS gosha.history;
 DROP TABLE IF EXISTS gosha.users;
 DROP TABLE IF EXISTS gosha.posts;
 DROP TABLE IF EXISTS gosha.inputs;
 DROP TABLE IF EXISTS gosha.devices;
 DROP TABLE IF EXISTS gosha.temperature_delta;
+DROP TABLE IF EXISTS gosha.constants;
+
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetData"();
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetData"(datetime timestamp with time zone);
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetHeight"(height numeric);
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetPressure"();
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetPressure"(pressure numeric);
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetTemperature"();
+DROP FUNCTION IF EXISTS gosha."fnHeaderGetTemperature"(our_temperature numeric);
+
 DROP TYPE IF EXISTS gosha.interpolation;
+
 DROP SCHEMA IF EXISTS gosha;
 
-
-
-CREATE SCHEMA gosha;
-
--- study - мой пользователь
-ALTER SCHEMA gosha OWNER TO study;
+CREATE SCHEMA IF NOT EXISTS gosha;
 
 
 -- Тип данных для интерполяции температуры
@@ -28,28 +32,36 @@ CREATE TYPE gosha.interpolation AS
 
 
 -- Устройства измерения
-CREATE TABLE gosha.devices (
+CREATE TABLE IF NOT EXISTS gosha.devices (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     name character varying(100) NOT NULL
 );
 
 
 -- Должности
-CREATE TABLE gosha.posts (
+CREATE TABLE IF NOT EXISTS gosha.posts (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     name character varying(100) NOT NULL
 );
 
 
 -- Поправки температуры
-CREATE TABLE gosha.temperature_delta (
+CREATE TABLE IF NOT EXISTS gosha.temperature_delta (
 	temperature numeric(8,2) NOT NULL PRIMARY KEY,
 	delta numeric(8,2) NOT NULL
 );
 
 
+-- Константы
+CREATE TABLE IF NOT EXISTS gosha.constants
+(
+    id character(50) NOT NULL PRIMARY KEY,
+    constant character(100) NOT NULL
+);
+
+
 -- Введёные метео значения
-CREATE TABLE gosha.inputs (
+CREATE TABLE IF NOT EXISTS gosha.inputs (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     height numeric(8,2) NOT NULL,
     temperature numeric(8,2) NOT NULL,
@@ -61,7 +73,7 @@ CREATE TABLE gosha.inputs (
 
 
 -- Пользователи
-CREATE TABLE gosha.users (
+CREATE TABLE IF NOT EXISTS gosha.users (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     post uuid NOT NULL,
     fullname character varying(100) NOT NULL,
@@ -71,7 +83,7 @@ CREATE TABLE gosha.users (
 
 
 -- История запросов
-CREATE TABLE gosha.history (
+CREATE TABLE IF NOT EXISTS gosha.history (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
     user_id uuid NOT NULL,
     input_id uuid NOT NULL,
@@ -82,10 +94,13 @@ CREATE TABLE gosha.history (
 	FOREIGN KEY (user_id) REFERENCES gosha.users(id),
 	FOREIGN KEY (input_id) REFERENCES gosha.inputs(id),
 	FOREIGN KEY (device_id) REFERENCES gosha.devices(id)
-);
+);	
 
 
--- Данные
+-- Данные для вставки
+INSERT INTO gosha.constants VALUES ('pressure', '750');
+INSERT INTO gosha.constants VALUES ('temperature', '15.9');
+
 INSERT INTO gosha.devices VALUES ('b07940a1-c522-4b9c-90ba-771c6869d2d7', 'Десантный метео комплект');
 INSERT INTO gosha.devices VALUES ('c7237b8d-8b89-46ed-a774-f0c7f4ff7e32', 'Ветровое ружьё');
 
@@ -129,22 +144,122 @@ INSERT INTO gosha.users VALUES ('1fae05b2-3c7c-4faf-9d45-1393e6107166', 'e479b4a
 INSERT INTO gosha.history VALUES ('51454263-3456-453d-a3f4-ee8bb373451d', '1fae05b2-3c7c-4faf-9d45-1393e6107166', '50f94903-a2f1-4992-81e2-e17659550494', '2025-02-03 13:56:27.489842+00', 36.66, 60.02, 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 
 
+-- Создание функций
+
+-- Получить дата-время в нужном формате
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetData"(
+	datetime timestamp with time zone
+	)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	return substring(to_char(datetime, 'DDHHMI'), 1, 5);
+end;
+$BODY$;
 
 
--- Начала всяких скриптов
-DECLARE params gosha.interpolation;
-DECLARE delta numeric(8, 2);
-DECLARE our_temp numeric(8, 2) := 22;
-BEGIN
-    IF temperature > 40 THEN
+-- Получить текущее дата-время в нужном формате
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetData"(
+	)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	return gosha."fnHeaderGetData"(now());
+end;
+$BODY$;
+
+
+-- Форматировать высоту
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetHeight"(
+	height numeric)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	return lpad(height::text, 4, '0');
+end;
+$BODY$;
+
+
+-- Получить константу для давления
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetPressure"(
+	)
+    RETURNS numeric
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	return (select constant from gosha.constants where id = 'pressure')::numeric(8,0);
+end;
+$BODY$;
+
+
+-- Получить рассчитаное давление
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetPressure"(
+	pressure numeric)
+    RETURNS numeric
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE 
+	pressure_delta numeric;
+begin
+	pressure_delta := pressure - gosha."fnHeaderGetPressure"();
+	IF pressure_delta < 0 THEN
+		pressure_delta := pressure_delta - 500;
+	END IF;
+	pressure_delta := abs(pressure_delta);
+	return pressure_delta;
+end;
+$BODY$;
+
+
+-- Получить константу для температуры
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetTemperature"(
+	)
+    RETURNS numeric
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	return (select constant from gosha.constants where id = 'temperature');
+end;
+$BODY$;
+
+
+-- Получить рассчитаную температуру
+CREATE OR REPLACE FUNCTION gosha."fnHeaderGetTemperature"(
+	our_temperature numeric)
+    RETURNS numeric
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+	params gosha.interpolation;
+	delta numeric(8, 2);
+begin
+	
+	IF our_temperature > 40 THEN
         RAISE EXCEPTION 'Error: impossible temrepature for artilery';
     END IF; 
-	SELECT * FROM gosha.temperature_delta WHERE temperature <= our_temp ORDER BY temperature DESC LIMIT 1 INTO params.x1,params.y1;
-	SELECT * FROM gosha.temperature_delta WHERE temperature > our_temp ORDER BY temperature LIMIT 1 INTO params.x2,params.y2;
-	delta:= ((params.y1*params.x2 - params.y2*params.x1)/(params.x2-params.x1))+((params.y2 - params.y1)/(params.x2 - params.x1))*our_temp;
+	SELECT * FROM gosha.temperature_delta WHERE temperature <= our_temperature ORDER BY temperature DESC LIMIT 1 INTO params.x1,params.y1;
+	SELECT * FROM gosha.temperature_delta WHERE temperature > our_temperature ORDER BY temperature LIMIT 1 INTO params.x2,params.y2;
+	delta:= ((params.y1*params.x2 - params.y2*params.x1)/(params.x2-params.x1))+((params.y2 - params.y1)/(params.x2 - params.x1))*our_temperature;
+	return round((our_temperature + delta) - gosha."fnHeaderGetTemperature"());
+end;
+$BODY$;
 
-	RAISE NOTICE 'interolated delta: %', delta;
-END;
-	
 
-END$$;
+select gosha."fnHeaderGetPressure"(735), gosha."fnHeaderGetTemperature"(23), gosha."fnHeaderGetData"(), gosha."fnHeaderGetHeight"(60);
