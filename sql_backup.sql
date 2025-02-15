@@ -6,6 +6,15 @@ DROP TABLE IF EXISTS gosha.devices;
 DROP TABLE IF EXISTS gosha.temperature_delta;
 DROP TABLE IF EXISTS gosha.constants;
 
+DROP FUNCTION IF EXISTS gosha."fnHeaderCreate"(data gosha.input);
+DROP FUNCTION IF EXISTS gosha."fnInputValidate"(
+	height numeric(8,2),
+    temperature numeric(8,2),
+    pressure numeric(8,2),
+    wind_speed numeric(8,2),
+    wind_direction numeric(8,2)
+	);
+DROP FUNCTION IF EXISTS gosha."fnGetConstant"(const_name character varying);
 DROP FUNCTION IF EXISTS gosha."fnHeaderGetData"();
 DROP FUNCTION IF EXISTS gosha."fnHeaderGetData"(datetime timestamp with time zone);
 DROP FUNCTION IF EXISTS gosha."fnHeaderGetHeight"(height numeric);
@@ -15,6 +24,7 @@ DROP FUNCTION IF EXISTS gosha."fnHeaderGetTemperature"();
 DROP FUNCTION IF EXISTS gosha."fnHeaderGetTemperature"(our_temperature numeric);
 
 DROP TYPE IF EXISTS gosha.interpolation;
+DROP TYPE IF EXISTS gosha.input;
 
 DROP SCHEMA IF EXISTS gosha;
 
@@ -28,6 +38,16 @@ CREATE TYPE gosha.interpolation AS
 	y1 numeric(8, 2),
 	x2 numeric(8, 2),
 	y2 numeric(8, 2)
+);
+
+
+-- Тип для передачи данных
+CREATE TYPE gosha.input AS (
+    height numeric(8,2),
+    temperature numeric(8,2),
+    pressure numeric(8,2),
+    wind_speed numeric(8,2),
+    wind_direction numeric(8,2)
 );
 
 
@@ -55,8 +75,8 @@ CREATE TABLE IF NOT EXISTS gosha.temperature_delta (
 -- Константы
 CREATE TABLE IF NOT EXISTS gosha.constants
 (
-    id character(50) NOT NULL PRIMARY KEY,
-    constant character(100) NOT NULL
+    id character varying(50) NOT NULL PRIMARY KEY,
+    constant character varying(100) NOT NULL
 );
 
 
@@ -100,6 +120,12 @@ CREATE TABLE IF NOT EXISTS gosha.history (
 -- Данные для вставки
 INSERT INTO gosha.constants VALUES ('pressure', '750');
 INSERT INTO gosha.constants VALUES ('temperature', '15.9');
+INSERT INTO gosha.constants VALUES ('max_temperature', '59');
+INSERT INTO gosha.constants VALUES ('min_temperature', '-58');
+INSERT INTO gosha.constants VALUES ('max_pressure', '900');
+INSERT INTO gosha.constants VALUES ('min_pressure', '500');
+INSERT INTO gosha.constants VALUES ('max_wind', '59');
+INSERT INTO gosha.constants VALUES ('min_wind', '0');
 
 INSERT INTO gosha.devices VALUES ('b07940a1-c522-4b9c-90ba-771c6869d2d7', 'Десантный метео комплект');
 INSERT INTO gosha.devices VALUES ('c7237b8d-8b89-46ed-a774-f0c7f4ff7e32', 'Ветровое ружьё');
@@ -146,6 +172,24 @@ INSERT INTO gosha.history VALUES ('51454263-3456-453d-a3f4-ee8bb373451d', '1fae0
 
 -- Создание функций
 
+-- Получить константу по ключу
+CREATE OR REPLACE FUNCTION gosha."fnGetConstant"(
+	const_name character varying(50)
+	)
+    RETURNS character varying
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	if const_name not in (select id from gosha.constants) then
+		raise exception 'Key not in constants!';
+	end if;
+	return (select constant from gosha.constants where id = const_name);
+end;
+$BODY$;
+
+
 -- Получить дата-время в нужном формате
 CREATE OR REPLACE FUNCTION gosha."fnHeaderGetData"(
 	datetime timestamp with time zone
@@ -177,14 +221,14 @@ $BODY$;
 
 -- Форматировать высоту
 CREATE OR REPLACE FUNCTION gosha."fnHeaderGetHeight"(
-	height numeric)
+	height numeric(8, 0))
     RETURNS character varying
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
 begin
-	return lpad(height::text, 4, '0');
+	return lpad(round(height)::text, 4, '0');
 end;
 $BODY$;
 
@@ -198,7 +242,7 @@ CREATE OR REPLACE FUNCTION gosha."fnHeaderGetPressure"(
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
 begin
-	return (select constant from gosha.constants where id = 'pressure')::numeric(8,0);
+	return gosha."fnGetConstant"('pressure')::numeric(8,0);
 end;
 $BODY$;
 
@@ -233,7 +277,7 @@ CREATE OR REPLACE FUNCTION gosha."fnHeaderGetTemperature"(
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
 begin
-	return (select constant from gosha.constants where id = 'temperature');
+	return gosha."fnGetConstant"('temperature')::numeric(8,0);
 end;
 $BODY$;
 
@@ -262,4 +306,50 @@ end;
 $BODY$;
 
 
-select gosha."fnHeaderGetPressure"(735), gosha."fnHeaderGetTemperature"(23), gosha."fnHeaderGetData"(), gosha."fnHeaderGetHeight"(60);
+-- sssss
+CREATE OR REPLACE FUNCTION gosha."fnInputValidate"(
+	height numeric(8,2),
+    temperature numeric(8,2),
+    pressure numeric(8,2),
+    wind_speed numeric(8,2),
+    wind_direction numeric(8,2)
+	)
+    RETURNS gosha.input
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+DECLARE
+	results gosha.input;
+begin
+	IF temperature < gosha."fnGetConstant"('min_temperature')::numeric OR 
+		temperature > gosha."fnGetConstant"('max_temperature')::numeric OR 
+		pressure > gosha."fnGetConstant"('max_pressure')::numeric OR 
+		pressure < gosha."fnGetConstant"('min_pressure')::numeric OR 
+		wind_speed > gosha."fnGetConstant"('max_wind')::numeric OR 
+		wind_speed < gosha."fnGetConstant"('min_wind')::numeric OR THEN
+		raise exception 'Неккоректные входящие данные.';
+	END IF;
+	SELECT COALESCE(height, 0), COALESCE(temperature, 0), COALESCE(pressure,0), COALESCE(wind_speed,0), COALESCE(wind_direction,0) INTO results.height, results.temperature, results.pressure, results.wind_speed, results.wind_direction;
+	return results;
+end;
+$BODY$;
+
+
+-- Сделать расчёты
+CREATE OR REPLACE FUNCTION gosha."fnHeaderCreate"(
+	data gosha.input
+	)
+    RETURNS TABLE(datetime character(5), height character(4), params character(5))
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+begin
+	return query select gosha."fnHeaderGetData"()::character(5), gosha."fnHeaderGetHeight"(data.height)::character(4), (lpad(gosha."fnHeaderGetPressure"(735)::text, 3, '0') || lpad(gosha."fnHeaderGetTemperature"(23)::text, 2, '0'))::character(5);
+end;
+$BODY$;
+
+
+
+select gosha."fnHeaderCreate"((60, 23, 755, 34, 34));
