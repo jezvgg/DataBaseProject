@@ -182,6 +182,9 @@ CREATE OR REPLACE FUNCTION gosha."fnGetConstant"(
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
 begin
+	if const_name not in (select id from gosha.constants) then
+		raise exception 'Key not in constants!';
+	end if;
 	return (select constant from gosha.constants where id = const_name);
 end;
 $BODY$;
@@ -324,10 +327,10 @@ begin
 		pressure > gosha."fnGetConstant"('max_pressure')::numeric OR 
 		pressure < gosha."fnGetConstant"('min_pressure')::numeric OR 
 		wind_speed > gosha."fnGetConstant"('max_wind')::numeric OR 
-		wind_speed < gosha."fnGetConstant"('min_wind')::numeric THEN
+		wind_speed < gosha."fnGetConstant"('min_wind')::numeric OR THEN
 		raise exception 'Неккоректные входящие данные.';
 	END IF;
-	SELECT height, temperature, pressure, wind_speed, wind_direction INTO results.height, results.temperature, results.pressure, results.wind_speed, results.wind_direction;
+	SELECT COALESCE(height, 0), COALESCE(temperature, 0), COALESCE(pressure,0), COALESCE(wind_speed,0), COALESCE(wind_direction,0) INTO results.height, results.temperature, results.pressure, results.wind_speed, results.wind_direction;
 	return results;
 end;
 $BODY$;
