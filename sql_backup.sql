@@ -1,32 +1,4 @@
-DROP TABLE IF EXISTS gosha.history;
-DROP TABLE IF EXISTS gosha.users;
-DROP TABLE IF EXISTS gosha.posts;
-DROP TABLE IF EXISTS gosha.inputs;
-DROP TABLE IF EXISTS gosha.devices;
-DROP TABLE IF EXISTS gosha.temperature_delta;
-DROP TABLE IF EXISTS gosha.constants;
-
-DROP FUNCTION IF EXISTS gosha."fnHeaderCreate"(data gosha.input);
-DROP FUNCTION IF EXISTS gosha."fnInputValidate"(
-	height numeric(8,2),
-    temperature numeric(8,2),
-    pressure numeric(8,2),
-    wind_speed numeric(8,2),
-    wind_direction numeric(8,2)
-	);
-DROP FUNCTION IF EXISTS gosha."fnGetConstant"(const_name character varying);
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetData"();
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetData"(datetime timestamp with time zone);
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetHeight"(height numeric);
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetPressure"();
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetPressure"(pressure numeric);
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetTemperature"();
-DROP FUNCTION IF EXISTS gosha."fnHeaderGetTemperature"(our_temperature numeric);
-
-DROP TYPE IF EXISTS gosha.interpolation;
-DROP TYPE IF EXISTS gosha.input;
-
-DROP SCHEMA IF EXISTS gosha;
+DROP SCHEMA IF EXISTS gosha CASCADE;
 
 CREATE SCHEMA IF NOT EXISTS gosha;
 
@@ -102,6 +74,16 @@ CREATE TABLE IF NOT EXISTS gosha.users (
 );
 
 
+-- Константы отклонения воздуха
+CREATE TABLE IF NOT EXISTS gosha.wind_temperature_delta (
+    height numeric(8,2) NOT NULL,
+	temperature_delta numeric(8,2) NOT NULL,
+	is_positive boolean NOT NULL,
+	delta numeric(8,2) NOT NULL,
+	PRIMARY KEY (height, temperature_delta, is_positive)
+);
+
+
 -- История запросов
 CREATE TABLE IF NOT EXISTS gosha.history (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
@@ -129,6 +111,296 @@ INSERT INTO gosha.constants VALUES ('min_wind', '0');
 
 INSERT INTO gosha.devices VALUES ('b07940a1-c522-4b9c-90ba-771c6869d2d7', 'Десантный метео комплект');
 INSERT INTO gosha.devices VALUES ('c7237b8d-8b89-46ed-a774-f0c7f4ff7e32', 'Ветровое ружьё');
+
+-- 1
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 1, false, -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 2, false, -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 3, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 4, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 5, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 6, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 7, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 8, false,  -8);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 9, false,  -8);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 10, false,  -9);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 20, false,  -20);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 30, false,  -29);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 40, false,  -39);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 50, false,  -49);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(200, 30, true,  30);
+
+-- 2
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 3, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 4, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 5, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 6, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 7, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 8, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 9, false,  -8);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 10, false,  -9);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 20, false,  -19);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 30, false,  -29);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 40, false,  -38);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 50, false,  -48);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(400, 30, true,  30);
+
+-- 3
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 3, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 4, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 5, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 6, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 7, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 8, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 9, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 10, false,  -8);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 20, false,  -18);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 30, false,  -28);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 40, false,  -37);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 50, false,  -46);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(800, 30, true,  30);
+
+-- 4
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 3, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 4, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 5, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 6, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 7, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 8, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 9, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 10, false,  -8);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 20, false,  -17);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 30, false,  -26);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 40, false,  -35);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 50, false,  -44);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(1200, 30, true,  30);
+
+-- 5
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 3, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 4, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 5, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 6, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 7, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 8, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 9, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 10, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 20, false,  -17);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 30, false,  -25);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 40, false,  -34);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 50, false,  -42);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(1600, 30, true,  30);
+
+-- 6
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 3, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 4, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 5, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 6, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 7, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 8, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 9, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 10, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 20, false,  -16);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 30, false,  -24);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 40, false,  -32);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 50, false,  -40);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(2000, 30, true,  30);
+
+
+-- 7
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 3, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 4, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 5, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 6, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 7, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 8, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 9, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 10, false,  -7);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 20, false,  -15);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 30, false,  -23);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 40, false,  -31);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 50, false,  -38);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(2400, 30, true,  30);
+
+-- 8
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 3, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 4, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 5, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 6, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 7, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 8, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 9, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 10, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 20, false,  -15);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 30, false,  -22);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 40, false,  -30);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 50, false,  -37);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(3000, 30, true,  30);
+
+-- 9
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 0, false,  0);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 0, true,  0);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 1, false,  -1);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 2, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 3, false,  -2);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 4, false,  -3);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 5, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 6, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 7, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 8, false,  -4);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 9, false,  -5);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 10, false,  -6);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 20, false,  -14);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 30, false,  -20);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 40, false,  -27);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 50, false,  -34);
+
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 1, true,  1);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 2, true,  2);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 3, true,  3);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 4, true,  4);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 5, true,  5);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 6, true,  6);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 7, true,  7);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 8, true,  8);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 9, true,  9);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 10, true,  10);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 20, true,  20);
+INSERT INTO gosha.wind_temperature_delta VALUES(4000, 30, true,  30);
+
 
 INSERT INTO gosha.inputs VALUES ('50f94903-a2f1-4992-81e2-e17659550494', 100.00, 26.50, 750.00, 5.00, 0.20, 460.00);
 
@@ -306,7 +578,7 @@ end;
 $BODY$;
 
 
--- sssss
+-- Функция валидации данных
 CREATE OR REPLACE FUNCTION gosha."fnInputValidate"(
 	height numeric(8,2),
     temperature numeric(8,2),
@@ -314,13 +586,11 @@ CREATE OR REPLACE FUNCTION gosha."fnInputValidate"(
     wind_speed numeric(8,2),
     wind_direction numeric(8,2)
 	)
-    RETURNS gosha.input
+    RETURNS boolean
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
-DECLARE
-	results gosha.input;
 begin
 	IF temperature < gosha."fnGetConstant"('min_temperature')::numeric OR 
 		temperature > gosha."fnGetConstant"('max_temperature')::numeric OR 
@@ -328,17 +598,20 @@ begin
 		pressure < gosha."fnGetConstant"('min_pressure')::numeric OR 
 		wind_speed > gosha."fnGetConstant"('max_wind')::numeric OR 
 		wind_speed < gosha."fnGetConstant"('min_wind')::numeric OR THEN
-		raise exception 'Неккоректные входящие данные.';
+		return false;
 	END IF;
-	SELECT COALESCE(height, 0), COALESCE(temperature, 0), COALESCE(pressure,0), COALESCE(wind_speed,0), COALESCE(wind_direction,0) INTO results.height, results.temperature, results.pressure, results.wind_speed, results.wind_direction;
-	return results;
+	return true;
 end;
 $BODY$;
 
 
 -- Сделать расчёты
 CREATE OR REPLACE FUNCTION gosha."fnHeaderCreate"(
-	data gosha.input
+	height_ numeric(8,2),
+    temperature numeric(8,2),
+    pressure numeric(8,2),
+    wind_speed numeric(8,2),
+    wind_direction numeric(8,2)
 	)
     RETURNS TABLE(datetime character(5), height character(4), params character(5))
     LANGUAGE 'plpgsql'
@@ -346,10 +619,30 @@ CREATE OR REPLACE FUNCTION gosha."fnHeaderCreate"(
     VOLATILE PARALLEL UNSAFE
 AS $BODY$
 begin
-	return query select gosha."fnHeaderGetData"()::character(5), gosha."fnHeaderGetHeight"(data.height)::character(4), (lpad(gosha."fnHeaderGetPressure"(735)::text, 3, '0') || lpad(gosha."fnHeaderGetTemperature"(23)::text, 2, '0'))::character(5);
+	IF not gosha."fnInputValidate"(height_, temperature, pressure, wind_speed, wind_direction) THEN
+		raise exception 'Неккоректные данные!';
+	END IF;
+	return query select gosha."fnHeaderGetData"()::character(5), gosha."fnHeaderGetHeight"(height_)::character(4), (lpad(gosha."fnHeaderGetPressure"(pressure)::text, 3, '0') || lpad(gosha."fnHeaderGetTemperature"(temperature)::text, 2, '0'))::character(5);
 end;
 $BODY$;
 
 
+-- Процедура получения разницы ветрянной температуры
+CREATE OR REPLACE PROCEDURE gosha."prGetWindTempDelta"(
+	IN temp_delta numeric,
+	INOUT delts numeric[] default array[]::numeric[])
+LANGUAGE 'plpgsql'
+AS $BODY$
+declare
+	isabove boolean;
+begin
+	isabove := case when temp_delta > 0 then 1 else 0 end;
+	select array_agg(t1.delta + t2.delta) from (select height, delta from gosha.wind_temperature_delta where temperature_delta = floor(abs(temp_delta) / 10) * 10.0 and is_positive = isabove) as t1
+	inner join (select height, delta from gosha.wind_temperature_delta where temperature_delta = abs(temp_delta) % 10 and is_positive = isabove) as t2
+	on t1.height = t2.height
+	into delts;
+end;
+$BODY$;
 
-select gosha."fnHeaderCreate"((60, 23, 755, 34, 34));
+
+call gosha."prGetWindTempDelta"(-19.0);
