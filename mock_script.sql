@@ -21,9 +21,9 @@ end loop;
 
 end $$;
 
-select t3.fullname, t4.name, count(*), sum(gosha."fnInputValidate"(t2.height, t2.temperature, t2.pressure, t2.wind_speed, t2.wind_direction)::integer) 
+select t3.fullname as name, t4.name as post, count(*) as cnt, sum((not gosha."fnInputValidate"(t2.height, t2.temperature, t2.pressure, t2.wind_speed, t2.wind_direction))::integer) as wrong 
 from gosha.history as t1
 inner join gosha.inputs as t2 on t1.input_id = t2.id
 inner join gosha.users as t3 on t1.user_id = t3.id
 inner join  gosha.posts as t4 on t3.post = t4.id
-group by t3.fullname, t4.name;
+group by t3.fullname, t4.name order by wrong;
