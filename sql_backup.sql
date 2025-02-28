@@ -97,7 +97,9 @@ CREATE TABLE IF NOT EXISTS gosha.history (
 	FOREIGN KEY (input_id) REFERENCES gosha.inputs(id),
 	FOREIGN KEY (device_id) REFERENCES gosha.devices(id)
 );	
-
+CREATE INDEX ix_history_user_id ON gosha.history(user_id);
+CREATE INDEX ix_history_input_id ON gosha.history(input_id);
+CREATE INDEX ix_history_device_id ON gosha.history(device_id);
 
 -- Данные для вставки
 INSERT INTO gosha.constants VALUES ('pressure', '750');
