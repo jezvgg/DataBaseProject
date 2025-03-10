@@ -83,7 +83,9 @@ CREATE TABLE IF NOT EXISTS gosha.const_table_values (
 	id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
 	value numeric(8,2) NOT NULL,
 	name uuid NOT NULL,
-	FOREIGN KEY (name) REFERENCES gosha.const_table_names(id)
+	device uuid,
+	FOREIGN KEY (name) REFERENCES gosha.const_table_names(id),
+	FOREIGN KEY (device) REFERENCES gosha.devices(id)
 );
 
 
@@ -183,6 +185,7 @@ INSERT INTO gosha.const_table_headers VALUES ('d40a05eb-1851-4a44-a7e5-4729e6ba0
 INSERT INTO gosha.const_table_headers VALUES ('5e1b4a1e-2884-4e65-8ed4-8ff0b5a5b3bb', 0, '33f5ba82-cd60-40f9-a3ad-2965e47d93ac');
 INSERT INTO gosha.const_table_headers VALUES ('4c72a246-9225-4ffb-9d56-1f5c55268e64', 1, '33f5ba82-cd60-40f9-a3ad-2965e47d93ac');
 
+-- Таблица по ДМК
 INSERT INTO gosha.const_table_headers VALUES ('46322079-b68d-4b07-abce-98fa42cc8fca', 3, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('555f8a00-0039-46a9-aa43-f86468551d8f', 4, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('217a9ae1-890c-49a8-8fde-31ccd828cfb8', 5, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
@@ -196,17 +199,31 @@ INSERT INTO gosha.const_table_headers VALUES ('0e988140-5fb7-469c-9734-8da9838ed
 INSERT INTO gosha.const_table_headers VALUES ('e7112b1c-5a21-46f8-afca-1baa583856d7', 13, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('d0473e8e-1a7b-4817-9847-d3e5a745f498', 14, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('0acfe29a-4b57-47f2-a093-dd0b00461cf8', 15, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+-- Таблица во ВР
+INSERT INTO gosha.const_table_headers VALUES ('ace15415-31cf-404f-bf2d-dc02fab70265', 40, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('21ab4019-88c6-44ac-9f44-12d338773c6b', 50, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('88a5f571-5d5b-4b3f-8628-fdefc414f1ec', 60, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('08e04998-cd40-4ced-8c5f-3251545c6e78', 70, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('e4f2e633-b1f2-41ff-a804-361637430fab', 80, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('b7c1dcd2-8f89-45d5-89d4-198b13030e2a', 90, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('da7d1d9e-1b35-4740-a3a6-aef1275c12ef', 100, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('79ce4b32-bb3d-4dc9-bfc2-062a32ca059b', 110, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('8fb7e328-864b-45ce-8173-e728214f4eb5', 120, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('86e396ef-05da-4beb-b138-ccf3a44ab9bf', 130, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('6b7a00a5-12bd-41ae-8899-a04f57bee788', 140, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('e1814372-2183-4d84-9eb4-5cc375bd23aa', 150, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 
 
-INSERT INTO gosha.const_table_values VALUES ('37200186-77e3-41c7-a56b-48b708b26a56', 1, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('a0b67763-3ddc-429f-af6c-95d7f6b47592', 2, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('eb19cb9b-6c11-4ed6-a0a4-2219270d60e7', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('af8978f5-c476-432e-9794-393c6d204707', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('bb65e5db-10b1-429b-9cb6-89b88ee55cf0', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('af7d551f-7acb-4ec8-80e1-7c2a9674e088', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('1fa11612-cb1f-4ef0-9930-15b7553bd667', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('7d9c4d1c-34af-41c5-8cc6-8e34b4ed6cab', 5, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
-INSERT INTO gosha.const_table_values VALUES ('e13ff294-c106-40f3-bd66-ebb766adb897', 5, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef');
+--ВР
+INSERT INTO gosha.const_table_values VALUES ('37200186-77e3-41c7-a56b-48b708b26a56', 1, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('a0b67763-3ddc-429f-af6c-95d7f6b47592', 2, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('eb19cb9b-6c11-4ed6-a0a4-2219270d60e7', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('af8978f5-c476-432e-9794-393c6d204707', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('bb65e5db-10b1-429b-9cb6-89b88ee55cf0', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('af7d551f-7acb-4ec8-80e1-7c2a9674e088', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('1fa11612-cb1f-4ef0-9930-15b7553bd667', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('7d9c4d1c-34af-41c5-8cc6-8e34b4ed6cab', 5, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('e13ff294-c106-40f3-bd66-ebb766adb897', 5, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '37200186-77e3-41c7-a56b-48b708b26a56', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a0b67763-3ddc-429f-af6c-95d7f6b47592', '19f254bd-f737-4661-b037-faaddb2df77e');
@@ -219,23 +236,413 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7d9c4d1c-34af-41
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e13ff294-c106-40f3-bd66-ebb766adb897', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
 
 
+--ДМК
+INSERT INTO gosha.const_table_values VALUES ('a4db001a-54f7-4ff4-818d-c41abb6bc1ca', 0, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('4f3a039b-3a28-42f0-9b98-64375d3d9d80', 1, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('256cc272-5d80-485f-b85b-0a0e4d3d30c9', 2, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('3b46e84c-13c4-4578-bcf2-31a2f59ba1d6', 2, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('45c7d58d-81cb-4128-a9c9-86e59dda58ec', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('03579980-7bb0-4227-88ce-d13ce82ce0ff', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('38407b79-c58c-4a13-90fa-ba622eab63a5', 3, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('3cbab452-e73b-4f53-bc26-6c421cf0f4b1', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('e99229f8-c9cd-4bde-b00a-4c62b777ab76', 4, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a4db001a-54f7-4ff4-818d-c41abb6bc1ca', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4f3a039b-3a28-42f0-9b98-64375d3d9d80', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '256cc272-5d80-485f-b85b-0a0e4d3d30c9', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '3b46e84c-13c4-4578-bcf2-31a2f59ba1d6', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '45c7d58d-81cb-4128-a9c9-86e59dda58ec', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '03579980-7bb0-4227-88ce-d13ce82ce0ff', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '38407b79-c58c-4a13-90fa-ba622eab63a5', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '3cbab452-e73b-4f53-bc26-6c421cf0f4b1', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e99229f8-c9cd-4bde-b00a-4c62b777ab76', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+
+
+
+
+--200
+INSERT INTO gosha.const_table_values VALUES ('9c1a3a42-ebd9-41f9-a03e-1d4a08491410', 3, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('ba41e203-5aae-40c5-b897-614822df03e3', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('dc2184f6-95db-44c3-8ef0-cfa316115b53', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('2b0950fa-c0bd-4218-8641-01b1a958bf93', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('cfd11de5-c897-4706-8477-3ab2bfe187b1', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('27034b7c-a678-4803-87d2-b2aeaabc22b4', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f82d708b-72bc-4bd6-b36d-949b128e3412', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('c0b45e8f-065b-4d90-b701-1e287df19b5b', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('0219e14d-ca50-4330-9e76-0923fd2c27b3', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('5474cbcf-cb11-4492-9fef-2eaca558e8f4', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('826b8159-66f0-43fb-aac9-2da3f4b6a969', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('eb3191a5-2f05-4cba-93c3-406abce1b5ce', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '9c1a3a42-ebd9-41f9-a03e-1d4a08491410', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ba41e203-5aae-40c5-b897-614822df03e3', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'dc2184f6-95db-44c3-8ef0-cfa316115b53', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2b0950fa-c0bd-4218-8641-01b1a958bf93', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'cfd11de5-c897-4706-8477-3ab2bfe187b1', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '27034b7c-a678-4803-87d2-b2aeaabc22b4', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f82d708b-72bc-4bd6-b36d-949b128e3412', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c0b45e8f-065b-4d90-b701-1e287df19b5b', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0219e14d-ca50-4330-9e76-0923fd2c27b3', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5474cbcf-cb11-4492-9fef-2eaca558e8f4', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '826b8159-66f0-43fb-aac9-2da3f4b6a969', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'eb3191a5-2f05-4cba-93c3-406abce1b5ce', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '9c1a3a42-ebd9-41f9-a03e-1d4a08491410', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ba41e203-5aae-40c5-b897-614822df03e3', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'dc2184f6-95db-44c3-8ef0-cfa316115b53', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2b0950fa-c0bd-4218-8641-01b1a958bf93', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'cfd11de5-c897-4706-8477-3ab2bfe187b1', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '27034b7c-a678-4803-87d2-b2aeaabc22b4', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f82d708b-72bc-4bd6-b36d-949b128e3412', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c0b45e8f-065b-4d90-b701-1e287df19b5b', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0219e14d-ca50-4330-9e76-0923fd2c27b3', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5474cbcf-cb11-4492-9fef-2eaca558e8f4', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '826b8159-66f0-43fb-aac9-2da3f4b6a969', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'eb3191a5-2f05-4cba-93c3-406abce1b5ce', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+--400
+INSERT INTO gosha.const_table_values VALUES ('4b9d061d-c273-4bbd-afad-4ed203958a60', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('3fa06c9d-8a8a-4316-b7c7-479b8b0b7145', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('31061422-eddb-4fda-928b-8fc47ecea74e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('1b7637c3-4b93-4166-a039-c0eb3f93a779', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('627a75f4-0e88-41a5-9472-674318747514', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('87055218-f4e5-4aaf-b800-c3571be76b34', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('79ca698b-b638-4861-8d4c-70b11f274b92', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('5edf4be1-edaa-46fa-92dd-fad5fa320a26', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f3e07aa1-f493-4193-8ca1-4392b64eaf2d', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f35b6142-7fa0-404b-8cc8-81014a27e4c5', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('9028ce97-3395-4129-9ab1-0c1441ee4663', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('fbdad14f-f504-48cb-a735-361d16bb71f7', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4b9d061d-c273-4bbd-afad-4ed203958a60', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '3fa06c9d-8a8a-4316-b7c7-479b8b0b7145', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '31061422-eddb-4fda-928b-8fc47ecea74e', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1b7637c3-4b93-4166-a039-c0eb3f93a779', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '627a75f4-0e88-41a5-9472-674318747514', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '87055218-f4e5-4aaf-b800-c3571be76b34', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '79ca698b-b638-4861-8d4c-70b11f274b92', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5edf4be1-edaa-46fa-92dd-fad5fa320a26', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f3e07aa1-f493-4193-8ca1-4392b64eaf2d', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f35b6142-7fa0-404b-8cc8-81014a27e4c5', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '9028ce97-3395-4129-9ab1-0c1441ee4663', '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'fbdad14f-f504-48cb-a735-361d16bb71f7', '19f254bd-f737-4661-b037-faaddb2df77e');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4b9d061d-c273-4bbd-afad-4ed203958a60', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '3fa06c9d-8a8a-4316-b7c7-479b8b0b7145', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '31061422-eddb-4fda-928b-8fc47ecea74e', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1b7637c3-4b93-4166-a039-c0eb3f93a779', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '627a75f4-0e88-41a5-9472-674318747514', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '87055218-f4e5-4aaf-b800-c3571be76b34', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '79ca698b-b638-4861-8d4c-70b11f274b92', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5edf4be1-edaa-46fa-92dd-fad5fa320a26', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f3e07aa1-f493-4193-8ca1-4392b64eaf2d', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f35b6142-7fa0-404b-8cc8-81014a27e4c5', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '9028ce97-3395-4129-9ab1-0c1441ee4663', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'fbdad14f-f504-48cb-a735-361d16bb71f7', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+-- 800
+INSERT INTO gosha.const_table_values VALUES ('682403a2-022a-49c5-8421-ffc21252a4c5', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('10381c11-faad-4013-8054-0817958b0314', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('1eefb567-4464-491a-87d8-f46281239b9b', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('96493d83-e90d-4767-873f-31401974b089', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('8d6081e1-430e-4d10-8041-cc89ac1fa7bb', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('faeb6f88-a968-4310-b3ae-0692f70d33db', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('a4354811-89f1-49e1-a4ce-e6afef503253', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('2115c5dd-7345-4c8b-8836-15d9a31bd9f9', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('29f0c6d8-5660-418b-bfd5-95a828e9cb50', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('9f71a265-31c3-4c75-b00d-263177fd25ee', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('8f0f5781-b6df-4115-8a43-6f94d464882b', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('e45ab5c2-c799-4b3f-8f4e-649171063475', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '682403a2-022a-49c5-8421-ffc21252a4c5', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '10381c11-faad-4013-8054-0817958b0314', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1eefb567-4464-491a-87d8-f46281239b9b', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '96493d83-e90d-4767-873f-31401974b089', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8d6081e1-430e-4d10-8041-cc89ac1fa7bb', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'faeb6f88-a968-4310-b3ae-0692f70d33db', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a4354811-89f1-49e1-a4ce-e6afef503253', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2115c5dd-7345-4c8b-8836-15d9a31bd9f9', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '29f0c6d8-5660-418b-bfd5-95a828e9cb50', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '9f71a265-31c3-4c75-b00d-263177fd25ee', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8f0f5781-b6df-4115-8a43-6f94d464882b', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e45ab5c2-c799-4b3f-8f4e-649171063475', '9c248174-82cf-485f-a14b-d496c1e6bad3');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '682403a2-022a-49c5-8421-ffc21252a4c5', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '10381c11-faad-4013-8054-0817958b0314', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1eefb567-4464-491a-87d8-f46281239b9b', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '96493d83-e90d-4767-873f-31401974b089', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8d6081e1-430e-4d10-8041-cc89ac1fa7bb', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'faeb6f88-a968-4310-b3ae-0692f70d33db', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a4354811-89f1-49e1-a4ce-e6afef503253', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2115c5dd-7345-4c8b-8836-15d9a31bd9f9', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '29f0c6d8-5660-418b-bfd5-95a828e9cb50', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '9f71a265-31c3-4c75-b00d-263177fd25ee', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8f0f5781-b6df-4115-8a43-6f94d464882b', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e45ab5c2-c799-4b3f-8f4e-649171063475', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+--1200
+INSERT INTO gosha.const_table_values VALUES ('e4700123-f55c-45d5-8938-92b878e6c566', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('e79aa5cd-0c4f-4f94-883a-a3aa9e07bdaf', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('1ca0fe12-81cd-4e43-bd53-d643d6584899', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('5dd3cec1-c33e-4fe6-a4af-a47d8bbc045d', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('88bfd401-b6b6-49c7-b8ba-51edcbd4a2c8', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('7df7fcde-4414-485f-aee0-9572ef90d6e4', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f0329a45-d293-43e4-ad52-8c33601d88a2', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('aea4b32d-c2ca-4f60-9cbc-e11cb4db1129', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('c2cb8885-e0f9-47bc-982f-5cb65569ac7c', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('8c5ec64e-f3b1-4ffe-a96a-c7eac82b9c4e', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('22c13a91-143b-4e6b-8aa8-cfdb802e246a', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('dae6b472-dac6-4945-8ac4-1d3df771d8a7', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e4700123-f55c-45d5-8938-92b878e6c566', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e79aa5cd-0c4f-4f94-883a-a3aa9e07bdaf', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1ca0fe12-81cd-4e43-bd53-d643d6584899', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5dd3cec1-c33e-4fe6-a4af-a47d8bbc045d', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '88bfd401-b6b6-49c7-b8ba-51edcbd4a2c8', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7df7fcde-4414-485f-aee0-9572ef90d6e4', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f0329a45-d293-43e4-ad52-8c33601d88a2', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'aea4b32d-c2ca-4f60-9cbc-e11cb4db1129', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c2cb8885-e0f9-47bc-982f-5cb65569ac7c', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8c5ec64e-f3b1-4ffe-a96a-c7eac82b9c4e', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '22c13a91-143b-4e6b-8aa8-cfdb802e246a', 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'dae6b472-dac6-4945-8ac4-1d3df771d8a7', 'ae8de529-4081-436b-8944-420028fa3cf4');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e4700123-f55c-45d5-8938-92b878e6c566', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e79aa5cd-0c4f-4f94-883a-a3aa9e07bdaf', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1ca0fe12-81cd-4e43-bd53-d643d6584899', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5dd3cec1-c33e-4fe6-a4af-a47d8bbc045d', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '88bfd401-b6b6-49c7-b8ba-51edcbd4a2c8', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7df7fcde-4414-485f-aee0-9572ef90d6e4', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f0329a45-d293-43e4-ad52-8c33601d88a2', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'aea4b32d-c2ca-4f60-9cbc-e11cb4db1129', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c2cb8885-e0f9-47bc-982f-5cb65569ac7c', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8c5ec64e-f3b1-4ffe-a96a-c7eac82b9c4e', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '22c13a91-143b-4e6b-8aa8-cfdb802e246a', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'dae6b472-dac6-4945-8ac4-1d3df771d8a7', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+--1600
+INSERT INTO gosha.const_table_values VALUES ('24e2e787-fce7-4aba-8b5c-d3159ae88454', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('460c3b61-03e7-43be-bea3-4c795e84c32f', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('ea57b8ec-4890-44e3-ad7a-eb6c1b5bfc3a', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('c33061ca-b37d-4a2a-a2b9-3d551ef27c7c', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('cd4a00f1-a8e8-4a0d-bbf9-8f0584e3e022', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('a0d1c646-13a5-43dd-9e7a-ba1082b14c87', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('7addc0a4-defa-48d9-8f95-9410e9e16cfa', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('91126f6b-e73b-4863-abe8-2a79bb726be3', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('33e68ed0-5dca-479e-97cf-cbbc7e8e649e', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('b30ad2b0-dabf-49e6-81bf-dda50728fae2', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('2fa2bd95-5e92-4958-bdf5-f14aa6d6ad21', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f7f3f97d-044c-4c55-a7f2-a79c6cfd7459', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '24e2e787-fce7-4aba-8b5c-d3159ae88454', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '460c3b61-03e7-43be-bea3-4c795e84c32f', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ea57b8ec-4890-44e3-ad7a-eb6c1b5bfc3a', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c33061ca-b37d-4a2a-a2b9-3d551ef27c7c', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'cd4a00f1-a8e8-4a0d-bbf9-8f0584e3e022', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a0d1c646-13a5-43dd-9e7a-ba1082b14c87', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7addc0a4-defa-48d9-8f95-9410e9e16cfa', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '91126f6b-e73b-4863-abe8-2a79bb726be3', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '33e68ed0-5dca-479e-97cf-cbbc7e8e649e', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b30ad2b0-dabf-49e6-81bf-dda50728fae2', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2fa2bd95-5e92-4958-bdf5-f14aa6d6ad21', '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f7f3f97d-044c-4c55-a7f2-a79c6cfd7459', '845b0477-bc67-40be-824a-ef933fd5f939');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '24e2e787-fce7-4aba-8b5c-d3159ae88454', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '460c3b61-03e7-43be-bea3-4c795e84c32f', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ea57b8ec-4890-44e3-ad7a-eb6c1b5bfc3a', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c33061ca-b37d-4a2a-a2b9-3d551ef27c7c', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'cd4a00f1-a8e8-4a0d-bbf9-8f0584e3e022', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a0d1c646-13a5-43dd-9e7a-ba1082b14c87', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7addc0a4-defa-48d9-8f95-9410e9e16cfa', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '91126f6b-e73b-4863-abe8-2a79bb726be3', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '33e68ed0-5dca-479e-97cf-cbbc7e8e649e', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b30ad2b0-dabf-49e6-81bf-dda50728fae2', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2fa2bd95-5e92-4958-bdf5-f14aa6d6ad21', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f7f3f97d-044c-4c55-a7f2-a79c6cfd7459', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+--2000
+INSERT INTO gosha.const_table_values VALUES ('8ed9d3fa-2c6c-4928-9124-42fe605012fa', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('4eb18a75-ea61-4687-a5ed-92ffe274b5f5', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('be8eabfd-e93d-4761-83dd-043cc8f83eaf', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('02ccad28-cfc0-4801-b217-8d5c88ade2e5', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('d52da2ea-186f-477c-85b9-fe0ef6c5d3e0', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('941024db-0719-43c6-b0d9-ef8add293188', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('875fe39c-5ca3-42c0-a9fd-7fadf2a489b3', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('6fa321ce-2fb5-41d0-bfe2-88972c840ded', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('af075641-2b22-4307-b58f-0e4635eaaa6b', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('ce958491-f03d-426d-a98d-8e7d74b82965', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('7f36e156-50d9-4e15-abea-ab4957dd0300', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('b82c30aa-9e5d-4ac2-b896-27822d4cb202', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8ed9d3fa-2c6c-4928-9124-42fe605012fa', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4eb18a75-ea61-4687-a5ed-92ffe274b5f5', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'be8eabfd-e93d-4761-83dd-043cc8f83eaf', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '02ccad28-cfc0-4801-b217-8d5c88ade2e5', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'd52da2ea-186f-477c-85b9-fe0ef6c5d3e0', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '941024db-0719-43c6-b0d9-ef8add293188', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '875fe39c-5ca3-42c0-a9fd-7fadf2a489b3', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '6fa321ce-2fb5-41d0-bfe2-88972c840ded', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'af075641-2b22-4307-b58f-0e4635eaaa6b', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ce958491-f03d-426d-a98d-8e7d74b82965', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7f36e156-50d9-4e15-abea-ab4957dd0300', '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b82c30aa-9e5d-4ac2-b896-27822d4cb202', '29f4ffde-281e-402b-be8a-1621e03504c0');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8ed9d3fa-2c6c-4928-9124-42fe605012fa', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4eb18a75-ea61-4687-a5ed-92ffe274b5f5', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'be8eabfd-e93d-4761-83dd-043cc8f83eaf', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '02ccad28-cfc0-4801-b217-8d5c88ade2e5', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'd52da2ea-186f-477c-85b9-fe0ef6c5d3e0', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '941024db-0719-43c6-b0d9-ef8add293188', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '875fe39c-5ca3-42c0-a9fd-7fadf2a489b3', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '6fa321ce-2fb5-41d0-bfe2-88972c840ded', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'af075641-2b22-4307-b58f-0e4635eaaa6b', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ce958491-f03d-426d-a98d-8e7d74b82965', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7f36e156-50d9-4e15-abea-ab4957dd0300', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b82c30aa-9e5d-4ac2-b896-27822d4cb202', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+-- 2400
+INSERT INTO gosha.const_table_values VALUES ('987c4d40-09c0-42bc-ac40-b75bcef51685', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('289ab0b8-c788-443b-baa4-70fec7217a3f', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('7301c233-010b-4fe8-8de5-7d0d04f0aa5e', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('97705cf0-f154-45e0-94e7-c3234f63b554', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('374e9483-ddb4-47d3-8f39-399b1c9c5549', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f78dd8c8-490d-49ec-a3a8-467f81ec50bb', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('217519cb-80c0-4605-8774-4895f65a2398', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('5b2b0c1e-c584-48d9-8ddc-d33bdeec0e38', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('2221e6b2-d50f-415d-be50-b7cedb1e482a', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('c9dd8c55-ee92-4d9d-a48c-67141c620060', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('bb8a5a7b-aa91-4e8b-a7df-98efad4f91e9', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('c76903a8-c3bc-4308-917e-9bc29ef638aa', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '987c4d40-09c0-42bc-ac40-b75bcef51685', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '289ab0b8-c788-443b-baa4-70fec7217a3f', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7301c233-010b-4fe8-8de5-7d0d04f0aa5e', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '97705cf0-f154-45e0-94e7-c3234f63b554', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '374e9483-ddb4-47d3-8f39-399b1c9c5549', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f78dd8c8-490d-49ec-a3a8-467f81ec50bb', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '217519cb-80c0-4605-8774-4895f65a2398', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5b2b0c1e-c584-48d9-8ddc-d33bdeec0e38', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2221e6b2-d50f-415d-be50-b7cedb1e482a', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c9dd8c55-ee92-4d9d-a48c-67141c620060', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'bb8a5a7b-aa91-4e8b-a7df-98efad4f91e9', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c76903a8-c3bc-4308-917e-9bc29ef638aa', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '987c4d40-09c0-42bc-ac40-b75bcef51685', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '289ab0b8-c788-443b-baa4-70fec7217a3f', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7301c233-010b-4fe8-8de5-7d0d04f0aa5e', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '97705cf0-f154-45e0-94e7-c3234f63b554', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '374e9483-ddb4-47d3-8f39-399b1c9c5549', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f78dd8c8-490d-49ec-a3a8-467f81ec50bb', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '217519cb-80c0-4605-8774-4895f65a2398', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5b2b0c1e-c584-48d9-8ddc-d33bdeec0e38', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2221e6b2-d50f-415d-be50-b7cedb1e482a', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c9dd8c55-ee92-4d9d-a48c-67141c620060', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'bb8a5a7b-aa91-4e8b-a7df-98efad4f91e9', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c76903a8-c3bc-4308-917e-9bc29ef638aa', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+-- 3000
+INSERT INTO gosha.const_table_values VALUES ('ef948d59-2d11-496e-b3c5-029cbb3afaae', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('c6533ad3-9f4e-4020-8bef-5b13d4125335', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('1a6aed95-77d9-4612-ae79-83b6efd98a27', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('2e48a697-5376-4565-92b0-b57696fd62b5', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('a8bdcaee-0053-4bf6-8857-74926c27b8dd', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('5b6df128-508e-44f4-92a8-62641a4f185f', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('b8c97572-98cd-4e61-9f9a-bb526cb8384d', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('a4cd8a1a-7aa4-4809-b931-a7332b61e24a', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('e2217df0-4b39-4be5-9014-40b87f081964', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('512da0bb-e97f-4ddc-ad0f-da5a9ebfe360', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('18128612-9329-406a-a21e-937f6f9c0682', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('0550c1ca-38ad-49c7-80c8-7285e678f852', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ef948d59-2d11-496e-b3c5-029cbb3afaae', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c6533ad3-9f4e-4020-8bef-5b13d4125335', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1a6aed95-77d9-4612-ae79-83b6efd98a27', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2e48a697-5376-4565-92b0-b57696fd62b5', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a8bdcaee-0053-4bf6-8857-74926c27b8dd', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5b6df128-508e-44f4-92a8-62641a4f185f', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b8c97572-98cd-4e61-9f9a-bb526cb8384d', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a4cd8a1a-7aa4-4809-b931-a7332b61e24a', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e2217df0-4b39-4be5-9014-40b87f081964', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '512da0bb-e97f-4ddc-ad0f-da5a9ebfe360', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '18128612-9329-406a-a21e-937f6f9c0682', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0550c1ca-38ad-49c7-80c8-7285e678f852', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ef948d59-2d11-496e-b3c5-029cbb3afaae', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c6533ad3-9f4e-4020-8bef-5b13d4125335', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '1a6aed95-77d9-4612-ae79-83b6efd98a27', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2e48a697-5376-4565-92b0-b57696fd62b5', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a8bdcaee-0053-4bf6-8857-74926c27b8dd', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5b6df128-508e-44f4-92a8-62641a4f185f', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b8c97572-98cd-4e61-9f9a-bb526cb8384d', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a4cd8a1a-7aa4-4809-b931-a7332b61e24a', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e2217df0-4b39-4be5-9014-40b87f081964', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '512da0bb-e97f-4ddc-ad0f-da5a9ebfe360', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '18128612-9329-406a-a21e-937f6f9c0682', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0550c1ca-38ad-49c7-80c8-7285e678f852', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
+
+
+-- 4000
+INSERT INTO gosha.const_table_values VALUES ('442e7b68-685a-46d5-a6b9-069147eae090', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('45c8418b-7308-446e-a191-3e1f2b7b853e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('032860df-6545-4e72-b534-1f789815e751', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('f51ff09f-d5bf-4c8a-934e-98461c435952', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('ccd7faf2-880b-4b41-afcd-40906d75f113', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('ccb919bb-766b-4273-8043-353c6381d4a6', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('8c45de81-b5c0-4dad-ae30-6873bb905f74', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('2869e2a3-a13b-4788-8642-5715d5124613', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('0c13ec22-9292-4f63-a5fc-88069108c0de', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('7c940f6f-9015-421d-b9f3-6fd1197e18d3', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('ea0ead8b-ba2d-49c8-9175-a7095355fa56', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES ('e6273cc4-1879-4b29-a2c3-ec39c918bb4e', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '442e7b68-685a-46d5-a6b9-069147eae090', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '45c8418b-7308-446e-a191-3e1f2b7b853e', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '032860df-6545-4e72-b534-1f789815e751', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f51ff09f-d5bf-4c8a-934e-98461c435952', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ccd7faf2-880b-4b41-afcd-40906d75f113', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ccb919bb-766b-4273-8043-353c6381d4a6', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8c45de81-b5c0-4dad-ae30-6873bb905f74', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2869e2a3-a13b-4788-8642-5715d5124613', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0c13ec22-9292-4f63-a5fc-88069108c0de', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7c940f6f-9015-421d-b9f3-6fd1197e18d3', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ea0ead8b-ba2d-49c8-9175-a7095355fa56', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e6273cc4-1879-4b29-a2c3-ec39c918bb4e', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '442e7b68-685a-46d5-a6b9-069147eae090', 'ace15415-31cf-404f-bf2d-dc02fab70265');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '45c8418b-7308-446e-a191-3e1f2b7b853e', '21ab4019-88c6-44ac-9f44-12d338773c6b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '032860df-6545-4e72-b534-1f789815e751', '88a5f571-5d5b-4b3f-8628-fdefc414f1ec');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f51ff09f-d5bf-4c8a-934e-98461c435952', '08e04998-cd40-4ced-8c5f-3251545c6e78');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ccd7faf2-880b-4b41-afcd-40906d75f113', 'e4f2e633-b1f2-41ff-a804-361637430fab');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ccb919bb-766b-4273-8043-353c6381d4a6', 'b7c1dcd2-8f89-45d5-89d4-198b13030e2a');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8c45de81-b5c0-4dad-ae30-6873bb905f74', 'da7d1d9e-1b35-4740-a3a6-aef1275c12ef');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2869e2a3-a13b-4788-8642-5715d5124613', '79ce4b32-bb3d-4dc9-bfc2-062a32ca059b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0c13ec22-9292-4f63-a5fc-88069108c0de', '8fb7e328-864b-45ce-8173-e728214f4eb5');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '7c940f6f-9015-421d-b9f3-6fd1197e18d3', '86e396ef-05da-4beb-b138-ccf3a44ab9bf');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ea0ead8b-ba2d-49c8-9175-a7095355fa56', '6b7a00a5-12bd-41ae-8899-a04f57bee788');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e6273cc4-1879-4b29-a2c3-ec39c918bb4e', 'e1814372-2183-4d84-9eb4-5cc375bd23aa');
 
 
 -- 200
-INSERT INTO gosha.const_table_values VALUES ('11359b2e-c4de-4d95-a77e-df49fd22ca53', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('5b1b1981-d420-43d5-b854-8d6120a001a1', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('f58cd8ab-6d60-4027-b23c-243d1c8e2bdb', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('acb1a14d-1e81-4258-b00b-5c88373e377b', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('9b5da669-e904-442e-bbe5-b3d06bb24cb3', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('830b5b39-226a-4f3c-853e-d97e6b6ee916', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('a7601888-fd5b-40d5-80df-1eff597e100a', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('356f96f0-de95-4bf3-a7ae-0a51e5786490', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('193a4d7a-1021-4776-b48c-88adeb19dae3', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('0b73dcc3-f113-4967-aae8-ec00c62b164e', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('16aa79b7-b385-40e6-97ad-452ee2c19efa', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('744ce5cb-4928-44c4-ae8b-60027c55832e', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('fc1b1f77-cdd5-445b-9444-95a22c5853e6', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('11359b2e-c4de-4d95-a77e-df49fd22ca53', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('5b1b1981-d420-43d5-b854-8d6120a001a1', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('f58cd8ab-6d60-4027-b23c-243d1c8e2bdb', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('acb1a14d-1e81-4258-b00b-5c88373e377b', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('9b5da669-e904-442e-bbe5-b3d06bb24cb3', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('830b5b39-226a-4f3c-853e-d97e6b6ee916', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('a7601888-fd5b-40d5-80df-1eff597e100a', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('356f96f0-de95-4bf3-a7ae-0a51e5786490', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('193a4d7a-1021-4776-b48c-88adeb19dae3', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('0b73dcc3-f113-4967-aae8-ec00c62b164e', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('16aa79b7-b385-40e6-97ad-452ee2c19efa', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('744ce5cb-4928-44c4-ae8b-60027c55832e', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('fc1b1f77-cdd5-445b-9444-95a22c5853e6', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '11359b2e-c4de-4d95-a77e-df49fd22ca53', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5b1b1981-d420-43d5-b854-8d6120a001a1', 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
@@ -267,19 +674,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'fc1b1f77-cdd5-44
 
 
 -- 400
-INSERT INTO gosha.const_table_values VALUES ('004d65e3-8e24-4fd3-a79a-7111de505b4e', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('ca757a06-3a0f-4948-ad05-f6cdbfe7e10d', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('8cfd9e20-0bfd-4e6f-8717-e4e14f487a91', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b6b5b25d-7ed7-4146-9732-306b6ef5f24c', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('73daaa1c-2174-499b-83e0-ad50e2139c69', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('4b9bdf05-33e3-4f92-8ee8-b2eb936e0d33', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('748ba582-f7c6-418f-8f76-7008cb7540ea', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('ce3f076a-7a55-41b0-a214-22b9e350d7bb', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b3f8370d-c99b-4e89-9926-95d5790ef62a', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('be5f9689-0d4e-4a38-ad38-2591dfc74fe0', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('723d2c63-4ada-41d3-90c0-8054815f2a5c', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b1fdc81b-5a34-4008-bfde-4c520e5fc59b', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('c6caf64a-bd5d-4275-b520-82f072163039', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('004d65e3-8e24-4fd3-a79a-7111de505b4e', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('ca757a06-3a0f-4948-ad05-f6cdbfe7e10d', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('8cfd9e20-0bfd-4e6f-8717-e4e14f487a91', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b6b5b25d-7ed7-4146-9732-306b6ef5f24c', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('73daaa1c-2174-499b-83e0-ad50e2139c69', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('4b9bdf05-33e3-4f92-8ee8-b2eb936e0d33', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('748ba582-f7c6-418f-8f76-7008cb7540ea', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('ce3f076a-7a55-41b0-a214-22b9e350d7bb', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b3f8370d-c99b-4e89-9926-95d5790ef62a', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('be5f9689-0d4e-4a38-ad38-2591dfc74fe0', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('723d2c63-4ada-41d3-90c0-8054815f2a5c', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b1fdc81b-5a34-4008-bfde-4c520e5fc59b', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('c6caf64a-bd5d-4275-b520-82f072163039', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '004d65e3-8e24-4fd3-a79a-7111de505b4e', '19f254bd-f737-4661-b037-faaddb2df77e');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'ca757a06-3a0f-4948-ad05-f6cdbfe7e10d', '19f254bd-f737-4661-b037-faaddb2df77e');
@@ -311,19 +718,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c6caf64a-bd5d-42
 
 
 -- 800
-INSERT INTO gosha.const_table_values VALUES ('0011b034-cc6c-4ba7-bea5-17a4a1492cb7', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b6ce1405-c2d1-4a2e-a6c6-c73792e11545', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('baae83b3-146e-46da-88a4-41f02b23ce7e', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('1e87192d-652d-4032-9562-473875254e3f', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('6f2d7804-c092-4ae6-85e9-9c7e6ff93b07', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('58a9270d-a5f3-4ebe-abd6-f975cb6cbe8a', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('066bbfca-d5a8-44dc-8d1e-8a7df959f892', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('2105501f-3cf9-43af-aaec-38c8ec727d1c', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('45e5c2aa-2c0f-4cac-af7c-ff053febc8e4', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('ce3709eb-80f1-401f-aa65-f080087539f1', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b957793f-e6a9-463c-81e3-7e9d0d50ce33', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('9f810369-f5ab-479f-846f-ffa164711d48', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('3ed0a20d-1fc7-4acc-aa01-8815e64b6e94', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('0011b034-cc6c-4ba7-bea5-17a4a1492cb7', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b6ce1405-c2d1-4a2e-a6c6-c73792e11545', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('baae83b3-146e-46da-88a4-41f02b23ce7e', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('1e87192d-652d-4032-9562-473875254e3f', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('6f2d7804-c092-4ae6-85e9-9c7e6ff93b07', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('58a9270d-a5f3-4ebe-abd6-f975cb6cbe8a', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('066bbfca-d5a8-44dc-8d1e-8a7df959f892', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('2105501f-3cf9-43af-aaec-38c8ec727d1c', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('45e5c2aa-2c0f-4cac-af7c-ff053febc8e4', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('ce3709eb-80f1-401f-aa65-f080087539f1', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b957793f-e6a9-463c-81e3-7e9d0d50ce33', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('9f810369-f5ab-479f-846f-ffa164711d48', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('3ed0a20d-1fc7-4acc-aa01-8815e64b6e94', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0011b034-cc6c-4ba7-bea5-17a4a1492cb7', '9c248174-82cf-485f-a14b-d496c1e6bad3');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b6ce1405-c2d1-4a2e-a6c6-c73792e11545', '9c248174-82cf-485f-a14b-d496c1e6bad3');
@@ -355,19 +762,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '3ed0a20d-1fc7-4a
 
 
 -- 1200
-INSERT INTO gosha.const_table_values VALUES ('4bea9541-fe98-44c7-beb4-aaf4ff93b2d8', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('a1a777f6-d6b8-4157-ab20-ce5f54d271b3', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('c12b6571-38a5-441b-afea-3c9d26128335', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('295409c8-2275-4a08-830b-efe42f6ef58b', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('6aa3ac25-86de-4bdc-948b-3499811c0e5e', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('62185d2e-72dc-4ca6-9315-b5ff7f56431e', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('747f145d-3204-4981-9d6f-b9c6a8e04e18', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('6f5cad01-0e82-4af0-8994-72bab6f224ce', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('1be3dbd1-d897-4f8e-8204-63e5fbdc9dfd', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('d1afa9c0-de04-4b2f-a6d1-e90489a9ddf6', 24, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('d8b8e7f1-7ac0-471e-b0fc-076c8c905426', 26, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('60812c5b-6f0e-4f4b-bf51-ff8ca9bc64a5', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('75043b6c-1728-4bee-89cd-54331ccc7862', 30, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('4bea9541-fe98-44c7-beb4-aaf4ff93b2d8', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('a1a777f6-d6b8-4157-ab20-ce5f54d271b3', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('c12b6571-38a5-441b-afea-3c9d26128335', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('295409c8-2275-4a08-830b-efe42f6ef58b', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('6aa3ac25-86de-4bdc-948b-3499811c0e5e', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('62185d2e-72dc-4ca6-9315-b5ff7f56431e', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('747f145d-3204-4981-9d6f-b9c6a8e04e18', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('6f5cad01-0e82-4af0-8994-72bab6f224ce', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('1be3dbd1-d897-4f8e-8204-63e5fbdc9dfd', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('d1afa9c0-de04-4b2f-a6d1-e90489a9ddf6', 24, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('d8b8e7f1-7ac0-471e-b0fc-076c8c905426', 26, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('60812c5b-6f0e-4f4b-bf51-ff8ca9bc64a5', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('75043b6c-1728-4bee-89cd-54331ccc7862', 30, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4bea9541-fe98-44c7-beb4-aaf4ff93b2d8', 'ae8de529-4081-436b-8944-420028fa3cf4');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a1a777f6-d6b8-4157-ab20-ce5f54d271b3', 'ae8de529-4081-436b-8944-420028fa3cf4');
@@ -399,19 +806,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '75043b6c-1728-4b
 
 
 -- 1600
-INSERT INTO gosha.const_table_values VALUES ('b1aef7fa-1676-4b99-81fb-d7ba024d3a5e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('4b31e93f-8714-48a4-86ef-32685c13c932', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('6486d3b3-821e-4d8b-8f4a-00a8e20cdd65', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('32aa2684-2bf8-48de-be88-d8ba511eb155', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('19d3017a-fa69-4432-9158-b67f18fd81d2', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('c0cae770-a000-460b-b5c8-7ca9ce28d108', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('6b865005-c093-46a6-82fe-8f8ef06550a4', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('272f808b-b1d5-4fa3-9143-d838380cb30b', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b4777437-65d5-4fba-b719-e2b36b83c4a4', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('39e5ab92-d585-46c9-86b6-94a09dd2273d', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('0ce9e2f6-e026-4644-833b-141e50cf50ac', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('9c1c6140-a53f-4f30-a271-ee250e939e87', 29, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('8a011b69-c3c2-4f9d-a8cb-84daeb2157b0', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('b1aef7fa-1676-4b99-81fb-d7ba024d3a5e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('4b31e93f-8714-48a4-86ef-32685c13c932', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('6486d3b3-821e-4d8b-8f4a-00a8e20cdd65', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('32aa2684-2bf8-48de-be88-d8ba511eb155', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('19d3017a-fa69-4432-9158-b67f18fd81d2', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('c0cae770-a000-460b-b5c8-7ca9ce28d108', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('6b865005-c093-46a6-82fe-8f8ef06550a4', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('272f808b-b1d5-4fa3-9143-d838380cb30b', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b4777437-65d5-4fba-b719-e2b36b83c4a4', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('39e5ab92-d585-46c9-86b6-94a09dd2273d', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('0ce9e2f6-e026-4644-833b-141e50cf50ac', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('9c1c6140-a53f-4f30-a271-ee250e939e87', 29, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('8a011b69-c3c2-4f9d-a8cb-84daeb2157b0', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b1aef7fa-1676-4b99-81fb-d7ba024d3a5e', '845b0477-bc67-40be-824a-ef933fd5f939');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '4b31e93f-8714-48a4-86ef-32685c13c932', '845b0477-bc67-40be-824a-ef933fd5f939');
@@ -443,19 +850,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8a011b69-c3c2-4f
 
 
 -- 2000
-INSERT INTO gosha.const_table_values VALUES ('fc9dc852-5a13-482b-aa43-42563f9eaf03', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('5b01a9c6-e8c8-45c6-8a49-15d1c59e4a21', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('047247c4-f942-4c05-bc3a-e410a248dfee', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('3672d392-2e00-4f6b-a880-d4deae7821be', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('7f7b46bd-a8bc-4d4f-8a75-b4afecdb8432', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('58f60a15-5f2f-4d3d-a670-adbc69a3618d', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('28e81b62-c7c1-49fc-a6f6-21baaadf7fe7', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('7b8ee3d7-2e07-4a39-842b-edd419b23716', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('e1ad68cc-1489-41cb-be4b-a47904e44097', 24, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('a93e6fe4-0cdd-4bbe-9080-1dc0e04e04a8', 26, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('e10577cc-7a43-458a-b9e7-1dbdb09bea62', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('01a9b824-f579-4b50-8c69-b1e612e586d6', 30, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('a6f23343-043a-4f7c-a56c-14a089e60cdd', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('fc9dc852-5a13-482b-aa43-42563f9eaf03', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('5b01a9c6-e8c8-45c6-8a49-15d1c59e4a21', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('047247c4-f942-4c05-bc3a-e410a248dfee', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('3672d392-2e00-4f6b-a880-d4deae7821be', 13, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('7f7b46bd-a8bc-4d4f-8a75-b4afecdb8432', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('58f60a15-5f2f-4d3d-a670-adbc69a3618d', 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('28e81b62-c7c1-49fc-a6f6-21baaadf7fe7', 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('7b8ee3d7-2e07-4a39-842b-edd419b23716', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('e1ad68cc-1489-41cb-be4b-a47904e44097', 24, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('a93e6fe4-0cdd-4bbe-9080-1dc0e04e04a8', 26, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('e10577cc-7a43-458a-b9e7-1dbdb09bea62', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('01a9b824-f579-4b50-8c69-b1e612e586d6', 30, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('a6f23343-043a-4f7c-a56c-14a089e60cdd', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'fc9dc852-5a13-482b-aa43-42563f9eaf03', '29f4ffde-281e-402b-be8a-1621e03504c0');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '5b01a9c6-e8c8-45c6-8a49-15d1c59e4a21', '29f4ffde-281e-402b-be8a-1621e03504c0');
@@ -487,19 +894,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a6f23343-043a-4f
 
 
 -- 2400
-INSERT INTO gosha.const_table_values VALUES ('e43167af-cd28-4f0f-9bec-3cf77fa567ab', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('0ddc50df-9f9d-48f3-a1ce-88f77a4499f1', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('8fa79274-989f-4d88-8c84-690908c31f73', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('f980b166-be17-4802-b860-961d1f497d15', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('fe2a91a1-2e6c-4773-87f6-246c0f361f84', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('f236eba5-8eac-4f5e-b27e-f5b8f7cb516d', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('9073c1ac-bd57-42a3-8aea-640e96c12b7a', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('5a36fdd9-427e-4f69-8d99-8322fd10e9ae', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('3331a819-8f16-456e-a2f8-ea2fc0d02134', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('a5445750-c658-44c7-8488-0dd23ac92cf6', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('ab1c86ca-f1c1-4acf-88c5-d4ccd909f6aa', 29, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('729dfa65-7985-4e14-8c6b-7b4059b2ff27', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('12fbcbbe-f55b-40b7-a129-2f1787b58f9d', 36, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('e43167af-cd28-4f0f-9bec-3cf77fa567ab', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('0ddc50df-9f9d-48f3-a1ce-88f77a4499f1', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('8fa79274-989f-4d88-8c84-690908c31f73', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('f980b166-be17-4802-b860-961d1f497d15', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('fe2a91a1-2e6c-4773-87f6-246c0f361f84', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('f236eba5-8eac-4f5e-b27e-f5b8f7cb516d', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('9073c1ac-bd57-42a3-8aea-640e96c12b7a', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('5a36fdd9-427e-4f69-8d99-8322fd10e9ae', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('3331a819-8f16-456e-a2f8-ea2fc0d02134', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('a5445750-c658-44c7-8488-0dd23ac92cf6', 27, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('ab1c86ca-f1c1-4acf-88c5-d4ccd909f6aa', 29, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('729dfa65-7985-4e14-8c6b-7b4059b2ff27', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('12fbcbbe-f55b-40b7-a129-2f1787b58f9d', 36, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e43167af-cd28-4f0f-9bec-3cf77fa567ab', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0ddc50df-9f9d-48f3-a1ce-88f77a4499f1', 'bf109d15-5e82-4363-9484-9b0f67141e3d');
@@ -531,19 +938,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '12fbcbbe-f55b-40
 
 
 -- 3000
-INSERT INTO gosha.const_table_values VALUES ('af57b876-a499-4777-aaee-9a66f7787237', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('d40abe13-65e4-4b39-8acc-b72dd8c25b88', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('9b4c2d73-23af-41f6-8cec-b4ebab5abf73', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('1839e5bc-d0f0-4a4e-bb69-0ec7a14fed77', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('5423e2c9-d6ce-4482-8bcd-853cd2a9e9e4', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('256a9087-a818-4896-b49d-2f98726a83a4', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('ce7211a1-2498-4db0-be64-8a1a499a7eca', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('7c4e0ef6-8998-4c5a-a828-fe4351ebca7e', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('f351bccf-1d98-42f1-a535-6c4493dbe982', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('b11ecf01-b85b-45bf-9c17-e77945024b65', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('29be4b5a-6edc-4429-a810-397363decf7d', 30, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('1d73d000-7480-48ef-8d00-30bfb8d253f6', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('2e365732-c690-49b0-9feb-1eee75d2a510', 36, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('af57b876-a499-4777-aaee-9a66f7787237', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('d40abe13-65e4-4b39-8acc-b72dd8c25b88', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('9b4c2d73-23af-41f6-8cec-b4ebab5abf73', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('1839e5bc-d0f0-4a4e-bb69-0ec7a14fed77', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('5423e2c9-d6ce-4482-8bcd-853cd2a9e9e4', 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('256a9087-a818-4896-b49d-2f98726a83a4', 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('ce7211a1-2498-4db0-be64-8a1a499a7eca', 21, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('7c4e0ef6-8998-4c5a-a828-fe4351ebca7e', 23, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('f351bccf-1d98-42f1-a535-6c4493dbe982', 25, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('b11ecf01-b85b-45bf-9c17-e77945024b65', 28, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('29be4b5a-6edc-4429-a810-397363decf7d', 30, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('1d73d000-7480-48ef-8d00-30bfb8d253f6', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('2e365732-c690-49b0-9feb-1eee75d2a510', 36, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'af57b876-a499-4777-aaee-9a66f7787237', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'd40abe13-65e4-4b39-8acc-b72dd8c25b88', '6f95200d-31a2-4f01-be6b-f8e344a2e402');
@@ -575,19 +982,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2e365732-c690-49
 
 
 -- 4000
-INSERT INTO gosha.const_table_values VALUES ('38a47f64-a9a5-4960-b859-14af3bfce819', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('51aa6b58-79fc-444d-845c-71ba0578d8a7', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('0d1c8e9b-76e8-44ab-9bdb-8321ff3d5eda', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('8e5439f4-98c7-40cb-b8d6-fb6a02b95583', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('e16e9fe2-61bc-439d-9a67-a2308bc32cb3', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('42f8aa1f-35e3-4801-9ccd-0b59111fd98e', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('69b60069-0762-408c-98ae-2a01510d8a4c', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('54a40b09-4822-48eb-b507-6ff28c0e5ad3', 24, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('db144f85-4029-445d-987d-d56e4bdff556', 26, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('d7239d37-29ec-4ced-8e74-b32d93a43f61', 29, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('ac184a81-5dea-44e8-b5f3-134fc81348e2', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('9ab83356-abbd-40ce-9356-ed413cae4bbd', 34, 'b6669f4e-6811-4920-a57a-14318d7ba664');
-INSERT INTO gosha.const_table_values VALUES ('565d73ef-03d2-4298-a035-cfaa08d80004', 36, 'b6669f4e-6811-4920-a57a-14318d7ba664');
+INSERT INTO gosha.const_table_values VALUES ('38a47f64-a9a5-4960-b859-14af3bfce819', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('51aa6b58-79fc-444d-845c-71ba0578d8a7', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('0d1c8e9b-76e8-44ab-9bdb-8321ff3d5eda', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('8e5439f4-98c7-40cb-b8d6-fb6a02b95583', 14, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('e16e9fe2-61bc-439d-9a67-a2308bc32cb3', 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('42f8aa1f-35e3-4801-9ccd-0b59111fd98e', 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('69b60069-0762-408c-98ae-2a01510d8a4c', 22, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('54a40b09-4822-48eb-b507-6ff28c0e5ad3', 24, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('db144f85-4029-445d-987d-d56e4bdff556', 26, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('d7239d37-29ec-4ced-8e74-b32d93a43f61', 29, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('ac184a81-5dea-44e8-b5f3-134fc81348e2', 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('9ab83356-abbd-40ce-9356-ed413cae4bbd', 34, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES ('565d73ef-03d2-4298-a035-cfaa08d80004', 36, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '38a47f64-a9a5-4960-b859-14af3bfce819', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '51aa6b58-79fc-444d-845c-71ba0578d8a7', '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
@@ -1882,6 +2289,7 @@ WITH headers AS (
     FROM is_possitives AS t1
     JOIN values AS t5 ON t1.next_id = t5.id;
 
+
 create view gosha.wind_direction_delta as
 WITH headers AS (
         SELECT t1.id, t1.value, t2.name 
@@ -1894,13 +2302,15 @@ WITH headers AS (
         JOIN (SELECT * FROM headers WHERE name = 'heights') AS t2 ON t1.header_id = t2.id
     ),
 	values as (
-		select t1.* from gosha.const_table_values as t1
+		select t1.id, t1.value, t3.name from gosha.const_table_values as t1
 		join gosha.const_table_names as t2 on t1.name = t2.id
+		left join gosha.devices as t3 on t1.device = t3.id
 		where t2.name = 'wind_direction_delts'
 	)
-	SELECT t1.heights, t5.value 
+	SELECT t1.heights, t5.value, t5.name as device 
     FROM heights AS t1
     JOIN values AS t5 ON t1.next_id = t5.id;
+
 
 create view gosha.bullet_delta as
 WITH headers AS (
@@ -1920,11 +2330,12 @@ WITH headers AS (
         JOIN (SELECT * FROM headers WHERE name = 'bullet_delts') AS t3 ON t2.header_id = t3.id
     ),
 	values as (
-		select t1.* from gosha.const_table_values as t1
+		select t1.id, t1.value, t3.name from gosha.const_table_values as t1
 		join gosha.const_table_names as t2 on t1.name = t2.id
+		left join gosha.devices as t3 on t1.device = t3.id
 		where t2.name = 'bullet_delts'
 	)
-	SELECT t1.heights, t1.bullet_delts, t5.value 
+	SELECT t1.heights, t1.bullet_delts, t5.value, t5.name as device 
     FROM bullet_delts AS t1
     JOIN values AS t5 ON t1.next_id = t5.id;
 
@@ -2131,4 +2542,43 @@ end;
 $BODY$;
 
 
-select * from gosha.bullet_delta;
+-- Рассчёт направленя среднего ветра
+CREATE OR REPLACE FUNCTION gosha."fnGetAvgWind"(
+	wind_speed numeric(8, 0),
+	device_name text)
+    RETURNS numeric[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+declare
+	delts numeric[] default array[]::numeric[];
+begin
+	select array_agg(value + wind_speed) from gosha.wind_direction_delta where device=device_name into delts;
+	return delts;
+end;
+$BODY$;
+
+
+-- Рассчёт направленя среднего ветра
+CREATE OR REPLACE FUNCTION gosha."fnGetBullet"(
+	bullet_speed numeric(8, 2),
+	device_name text)
+    RETURNS numeric[]
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE PARALLEL UNSAFE
+AS $BODY$
+declare
+	delts numeric[] default array[]::numeric[];
+begin
+	select array_agg( x1 + (((bullet_speed - y1)*(x2-x1))/(y2-y1)) ) as result
+	from (select heights, min(bullet_delts) as y2, min(value) as x2 from gosha.bullet_delta where device=device_name and bullet_delts >= bullet_speed group by heights) as t1
+	join (select heights, max(bullet_delts) as y1, max(value) as x1 from gosha.bullet_delta where device=device_name and bullet_delts < bullet_speed group by heights) as t2 on t1.heights = t2.heights
+	into delts;
+	return delts;
+end;
+$BODY$;
+
+-- 'Десантный метео комплект';
+select gosha."fnGetBullet"(7.5, 'Десантный метео комплект');
