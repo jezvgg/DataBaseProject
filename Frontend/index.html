@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Метеосистема</title>
+  <link rel="stylesheet" href="./main.css" />
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Переключение вкладок (МЕТЕОБЮЛЛЕТЕНЬ / ЖУРНАЛ ИЗМЕРЕНИЙ)
+      const tabButtons = document.querySelectorAll('.meteo__nav-btn');
+      const tabContents = document.querySelectorAll('.meteo__tab');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Сбрасываем класс active на всех кнопках
+          tabButtons.forEach(b => b.classList.remove('meteo__nav-btn--active'));
+          // Назначаем active на текущую
+          btn.classList.add('meteo__nav-btn--active');
+
+          const targetTab = btn.getAttribute('data-tab');
+
+          // Показываем нужный блок, скрываем остальные
+          tabContents.forEach(tc => {
+            if (tc.id === targetTab) {
+              tc.classList.remove('meteo__tab--hidden');
+            } else {
+              tc.classList.add('meteo__tab--hidden');
+            }
+          });
+        });
+      });
+
+      // Переключение режимов (ДМК / ВР)
+      const modeButtons = document.querySelectorAll('.mode-selector__btn');
+      const windSpeedGroup = document.getElementById('windSpeedGroup');
+      const bulletDriftGroup = document.getElementById('bulletDriftGroup');
+      let currentMode = 'dmk'; // По умолчанию ДМК
+
+      modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modeButtons.forEach(b => b.classList.remove('mode-selector__btn--active'));
+          btn.classList.add('mode-selector__btn--active');
+          currentMode = btn.getAttribute('data-mode');
+
+          if (currentMode === 'dmk') {
+            // Отображаем "Скорость ветра"
+            windSpeedGroup.style.display = 'flex';
+            // Скрываем "Дальность сноса пуль"
+            bulletDriftGroup.style.display = 'none';
+          } else {
+            // Скрываем "Скорость ветра"
+            windSpeedGroup.style.display = 'none';
+            // Отображаем "Дальность сноса пуль"
+            bulletDriftGroup.style.display = 'flex';
+          }
+
+          checkFormValidity();
+        });
+      });
+
+      // Валидация формы
+      const inputs = document.querySelectorAll('.input-form__field');
+      const createBtn = document.getElementById('createMeteo11');
+
+      inputs.forEach(input => {
+        input.addEventListener('input', checkFormValidity);
+      });
+
+      function checkFormValidity() {
+        let allValid = true;
+
+        inputs.forEach(input => {
+          // Проверяем только те инпуты, которые видимы (не скрыты через display: none)
+          if (input.parentElement.style.display !== 'none') {
+            if (input.value.trim() === '') {
+              allValid = false;
+            }
+            
+            const value = parseFloat(input.value);
+            /*const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            
+            if (input.hasAttribute('min') && value < min) {
+              allValid = false;
+            }
+            if (input.hasAttribute('max') && value > max) {
+              allValid = false;
+            }*/
+          }
+        });
+
+        createBtn.disabled = !allValid;
+      }
+
+      // Заполнение таблицы "МЕТЕО-11 ПРИБЛИЖЕННЫЙ" и отображение кнопки "Принять как Действ."
+      const meteoTableBodies = document.querySelectorAll('.meteo-table__body');
+      const acceptBtn = document.getElementById('acceptBtn');
+
+      createBtn.addEventListener('click', () => {
+
+
+        fetch('http://localhost:3000/rpc/fnHeaderCreate?height_=200&temperature=28&pressure=726&wind_speed=20&wind_direction=0.2')
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          document.getElementById("header-data-1").innerHTML = data[0]["datetime"];
+          document.getElementById("header-pressure-1").innerHTML = data[0]["height"];
+          document.getElementById("header-params-1").innerHTML = data[0]["pressure_temperature"];
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+
+
+        
+
+
+
+
+        // Очищаем и заполняем обе таблицы
+        meteoTableBodies.forEach(tableBody => {
+          tableBody.innerHTML = ''; // Очищаем предыдущие результаты
+      
+          for (let i = 0; i < 8; i++) {
+            const row = document.createElement('tr');
+            row.className = 'meteo-table__row';
+            
+            const cells = ['diCell', 'dtCell', 'dWCell', 'wCell'].map(() => {
+              const cell = document.createElement('td');
+              cell.className = 'meteo-table__cell';
+              return cell;
+            });
+      
+            cells[0].textContent = i * 2;
+            cells[1].textContent = `0${i} ч`;
+            cells[2].textContent = (Math.random() * 10).toFixed(2);
+            cells[3].textContent = (Math.random() * 5).toFixed(2);
+            
+            cells.forEach(cell => row.appendChild(cell));
+            tableBody.appendChild(row);
+          }
+        });
+
+        // Показываем кнопку "Принять как Действ."
+        acceptBtn.classList.remove('meteo-btn--hidden');
+      });
+
+      acceptBtn.addEventListener('click', () => {
+        // Добавляем запись в журнал измерений
+        const logBody = document.querySelector('.log__body');
+        const now = new Date();
+        const dateStr = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        
+        const row = document.createElement('tr');
+        row.className = 'log__row';
+        
+        const data = [
+          dateStr,
+          document.getElementById('height').value,
+          document.getElementById('temperature').value,
+          document.getElementById('pressure').value,
+          document.getElementById('windDirection').value,
+          currentMode === 'dmk' ? 
+            document.getElementById('windSpeed').value : 
+            document.getElementById('bulletDrift').value
+        ];
+        
+        data.forEach(text => {
+          const cell = document.createElement('td');
+          cell.className = 'log__cell';
+          cell.textContent = text;
+          row.appendChild(cell);
+        });
+        
+        logBody.appendChild(row);
+        
+        alert('Принят как действующий метеобюллетень!');
+      });
+    });
+
+
+  </script>
+</head>
+<body>
+  <div class="meteo">
+    <nav class="meteo__nav">
+      <button class="meteo__nav-btn meteo__nav-btn--active" data-tab="meteo-bulletin">МЕТЕОБЮЛЛЕТЕНЬ</button>
+      <button class="meteo__nav-btn" data-tab="measurement-log">ЖУРНАЛ ИЗМЕРЕНИЙ</button>
+    </nav>
+
+    <div class="meteo__tab" id="meteo-bulletin">
+      <div class="meteo__content">
+        <!-- Left Panel -->
+        <div class="input-panel">
+          <div class="input-panel__header">
+            <div class="mode-selector">
+              <button class="mode-selector__btn mode-selector__btn--active" data-mode="dmk">ДМК</button>
+              <button class="mode-selector__btn" data-mode="vr">ВР</button>
+            </div>
+          </div>
+
+          <div class="input-form">
+            <div class="input-form__group">
+              <label class="input-form__label" for="height">Высота метеопоста</label>
+              <input class="input-form__field" type="number" id="height" name="height" step="1" value="100">
+            </div>
+            <div class="input-form__group">
+              <label class="input-form__label" for="temperature">Температура</label>
+              <input class="input-form__field" type="number" id="temperature" name="temperature" step="0.1" value="15">
+            </div>
+            <div class="input-form__group">
+              <label class="input-form__label" for="pressure">Давление</label>
+              <input class="input-form__field" type="number" id="pressure" name="pressure" step="1" value="750">
+            </div>
+            <div class="input-form__group">
+              <label class="input-form__label" for="windDirection">Направление ветра</label>
+              <input class="input-form__field" type="number" id="windDirection" name="windDirection" step="1" value="0">
+            </div>
+            <div class="input-form__group" id="windSpeedGroup">
+              <label class="input-form__label" for="windSpeed">Скорость ветра</label>
+              <input class="input-form__field" type="number" id="windSpeed" name="windSpeed" step="1" value="0">
+            </div>
+            <div class="input-form__group" id="bulletDriftGroup" style="display: none;">
+              <label class="input-form__label" for="bulletDrift">Дальность сноса пуль</label>
+              <input class="input-form__field" type="number" id="bulletDrift" name="bulletDrift" step="1" value="0">
+            </div>
+          </div>
+
+          <button class="meteo-btn meteo-btn--primary" id="createMeteo11">СОСТАВИТЬ МЕТЕО-11</button>
+          <button class="meteo-btn meteo-btn--red" id="acceptBtn">ПРИНЯТЬ КАК ДЕЙСТВ.</button>
+        </div>
+
+        <!-- Right Panel - МЕТЕО-11 приближенный -->
+        <div class="result-panel">
+          <div class="result-panel__header">
+            <div class="result-panel__title">
+              МЕТЕО-11 <span class="result-panel__subtitle">приближённый</span>
+            </div>
+          </div>
+
+          <div class="result-panel__dates">
+            <div class="result-panel__date" id="header-data-1">ДДЧЧМ</div>
+            <div class="result-panel__date" id="header-pressure-1">ВВВВ</div>
+            <div class="result-panel__date" id="header-params-1">БББТТ</div>
+          </div>
+
+          <div class="result-panel__header">
+            <div class="result-panel__dt-list">
+              <div class="result-panel__dt">ΔT</div>
+              <div class="result-panel__dt">𝛂W</div>
+              <div class="result-panel__dt">W</div>
+            </div>
+          </div>
+
+          <div class="meteo-table">
+            <table class="meteo-table__content">
+              <tbody class="meteo-table__body">
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">02</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">04</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">08</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">12</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">16</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">20</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">24</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell">30</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                    <td class="meteo-table__cell">40</td>
+                    <td class="meteo-table__cell"></td>
+                    <td class="meteo-table__cell"></td>
+                    <td class="meteo-table__cell"></td>
+                  </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Panel - МЕТЕО-11 -->
+        <div class="result-panel">
+          <div class="result-panel__header">
+            <div class="result-panel__title">МЕТЕО-11</div>
+          </div>
+
+          <div class="result-panel__dates">
+            <div class="result-panel__date">ДДЧЧМ</div>
+            <div class="result-panel__date">ДДЧЧМ</div>
+            <div class="result-panel__date">ДДЧЧМ</div>
+          </div>
+
+          <div class="result-panel__header">
+            <div class="result-panel__dt-list">
+              <div class="result-panel__dt">dt</div>
+              <div class="result-panel__dt">dt</div>
+              <div class="result-panel__dt">dt</div>
+            </div>
+          </div>
+
+          <div class="meteo-table">
+            <table class="meteo-table__content">
+              <tbody class="meteo-table__body">
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Журнал измерений tab -->
+    <div class="meteo__tab meteo__tab--hidden" id="measurement-log">
+      <h2 class="meteo__heading">Журнал измерений</h2>
+      <div class="log">
+        <table class="log__table">
+          <thead class="log__header">
+            <tr class="log__row">
+              <th class="log__cell log__cell--header">Дата</th>
+              <th class="log__cell log__cell--header">Высота</th>
+              <th class="log__cell log__cell--header">Темп.</th>
+              <th class="log__cell log__cell--header">Давл.</th>
+              <th class="log__cell log__cell--header">Напр. ветра</th>
+              <th class="log__cell log__cell--header">Скорость/Дальность</th>
+            </tr>
+          </thead>
+          <tbody class="log__body">
+            <!-- Dynamic content -->
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+            <tr class="log__row">
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+              <td class="log__cell"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,214 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #222;
+    color: #eee;
+  }
+  
+  .meteo__nav {
+    display: flex;
+    background-color: #333;
+  }
+  .meteo__nav-btn {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    color: #eee;
+    cursor: pointer;
+    outline: none;
+    background: linear-gradient(#232422, #161715);
+    font-size: 16px;
+    transition: background 0.2s ease;
+    border-bottom: 2px solid #28A3E9;
+  }
+  .meteo__nav-btn:hover {
+    background: #555;
+  }
+  .meteo__nav-btn--active {
+    background: linear-gradient(#279FE3, #1C5A7C);
+    border-bottom: none;
+  }
+  .meteo__tab {
+    padding: 20px;
+    background-color: #171816;
+  }
+  .meteo__tab--hidden {
+    display: none;
+  }
+  .meteo__content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  @media (max-width: 1306px) {
+    .meteo__content {
+      flex-direction: column;
+    }
+  }
+  
+  .mode-selector {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  .mode-selector__btn {
+    padding: 10px 20px;
+    border: none;
+    background: #444;
+    color: #eee;
+    cursor: pointer;
+    outline: none;
+    font-size: 14px;
+    margin-right: 10px;
+    transition: background 0.2s ease;
+  }
+  .mode-selector__btn:hover {
+    background: #555;
+  }
+  .mode-selector__btn--active {
+    background: #555;
+  }
+  
+  .input-form__group {
+    display: flex;
+  }
+  .input-form__label {
+    display: flex;
+    align-items: center;
+    width: 40%;
+    padding: 20px 37px 20px 14px;
+    font-size: 18px;
+    color: #ECEBBE;
+    background: #232420;
+    white-space: wrap;
+  }
+  .input-form__field {
+    width: 60%;
+    padding: 18px;
+    font-size: 26px;
+    background: #2F312B;
+    color: #eee;
+    border: none;
+    outline: none;
+  }
+  .input-form__field:focus {
+    border-color: #777;
+  }
+  
+  .meteo-btn {
+    padding: 20px;
+    border: none;
+    border-radius: 5px;
+    color: #ECEBBE;
+    cursor: pointer;
+    font-size: 20px;
+    margin-top: 10px;
+    transition: 0.2s ease;
+  }
+  .meteo-btn--primary {
+    background: linear-gradient(#279FE3, #1C5A7C);
+  }
+  .meteo-btn--red {
+    background: linear-gradient(#FE452C, #BA2101);
+  }
+  .meteo-btn:hover:not(:disabled) {
+    opacity: 0.8;
+  }
+  .meteo-btn:disabled {
+    background: #444;
+    cursor: not-allowed;
+  }
+  
+  .result-panel {
+    flex: 1;
+    padding: 10px;
+  }
+  .result-panel:last-child {
+    border: 2px solid #28A3E9;
+    border-radius: 5px;
+  }
+  .result-panel__header {
+    background: linear-gradient(#242523, #171816);
+    border-bottom: 2px solid #28A3E9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 65px;
+  }
+  .result-panel__title {
+    color: #ECEBBE;
+    font-size: 16px;
+  }
+  .result-panel__subtitle {
+    color: #fff;
+    font-size: 24px;
+  }
+  .result-panel__dates {
+    display: flex;
+    gap: 2px;
+    height: 30px;
+    margin-bottom: 40px;
+  }
+  .result-panel__date {
+    background-color: #2F312B;
+    flex: 1;
+    font-size: 24px;
+    text-align: center;
+    height: 65px;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+  .result-panel__dt-list {
+    display: flex;
+    width: 100%;
+  }
+  .result-panel__dt:first-child {
+    margin-left: 27%;
+  }
+  .result-panel__dt:nth-child(2) {
+    margin-left: 26%;
+  }
+  .result-panel__dt:last-child {
+    margin-left: 28%;
+  }
+  
+  .meteo-table {
+    background: #333;
+    border: 1px solid #555;
+    max-height: 532px;
+    overflow-y: auto;
+  }
+  .meteo-table__content {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .meteo-table__cell {
+    border: 1px solid #171816;
+    background-color: #2F312B;
+    padding: 5px;
+    width: 20%;
+    height: 55px;
+    text-align: center;
+  }
+  .meteo-table__cell:first-child {
+    width: 10%;
+  }
+  
+  .log {
+    margin-top: 20px;
+    max-height: 725px;
+    overflow: auto;
+  }
+  .log__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .log__cell {
+    border: 1px solid #555;
+    padding: 8px;
+    text-align: center;
+    height: 55px;
+  }
+  .log__cell--header {
+    background: #444;
+  }/*# sourceMappingURL=main.css.map */
