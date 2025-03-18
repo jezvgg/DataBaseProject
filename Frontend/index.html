@@ -99,51 +99,68 @@
 
       createBtn.addEventListener('click', () => {
 
+        const data = {
+          'height':document.getElementById('height').value,
+          'temperature':document.getElementById('temperature').value,
+          'pressure':document.getElementById('pressure').value,
+          'windDirection':document.getElementById('windDirection').value,
+          'bulletData':currentMode === 'dmk' ? 
+            document.getElementById('windSpeed').value : 
+            document.getElementById('bulletDrift').value,
+          'deviceName': currentMode === 'dmk' ? 'Десантный метео комплект' : 'Ветровое ружьё'
+        };
 
-        fetch('http://localhost:3000/rpc/fnHeaderCreate?height_=200&temperature=28&pressure=726&wind_speed=20&wind_direction=0.2')
+
+        fetch(`http://localhost:3000/rpc/fnHeaderCreate?height_=${data["height"]}&temperature=${data["temperature"]}&pressure=${data["pressure"]}&wind_speed=${data["bulletData"]}&wind_direction=${data["windDirection"]}`)
         .then(response => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
           return response.json();
         })
         .then(data => {
-          document.getElementById("header-data-1").innerHTML = data[0]["datetime"];
-          document.getElementById("header-pressure-1").innerHTML = data[0]["height"];
-          document.getElementById("header-params-1").innerHTML = data[0]["pressure_temperature"];
+          document.getElementById("header-data-1").innerHTML = data["datetime"];
+          document.getElementById("header-pressure-1").innerHTML = data["height"];
+          document.getElementById("header-params-1").innerHTML = data["pressure_temperature"];
         })
         .catch(error => {
           console.error('Error:', error);
         });
 
-
-        
-
-
-
-
-        // Очищаем и заполняем обе таблицы
-        meteoTableBodies.forEach(tableBody => {
-          tableBody.innerHTML = ''; // Очищаем предыдущие результаты
-      
-          for (let i = 0; i < 8; i++) {
+        meteoTableBodies[0].innerHTML = '';
+        fetch(`http://localhost:3000/rpc/fnCalculation?temperature=${data["temperature"]}&wind_speed=${data["bulletData"]}&bullet_param=${data["bulletData"]}&device_name=${data["deviceName"]}`)
+        .then(response => {
+          return response.json();
+        })
+        .then(data => {
+          data.forEach(params => {
             const row = document.createElement('tr');
             row.className = 'meteo-table__row';
-            
-            const cells = ['diCell', 'dtCell', 'dWCell', 'wCell'].map(() => {
-              const cell = document.createElement('td');
-              cell.className = 'meteo-table__cell';
-              return cell;
-            });
-      
-            cells[0].textContent = i * 2;
-            cells[1].textContent = `0${i} ч`;
-            cells[2].textContent = (Math.random() * 10).toFixed(2);
-            cells[3].textContent = (Math.random() * 5).toFixed(2);
-            
-            cells.forEach(cell => row.appendChild(cell));
-            tableBody.appendChild(row);
-          }
+
+            const cellHeights = document.createElement('td');
+            cellHeights.className = 'meteo-table__cell';
+            cellHeights.textContent = params["height"];
+            row.appendChild(cellHeights);
+
+            const cellWindTemp = document.createElement('td');
+            cellWindTemp.className = 'meteo-table__cell';
+            cellWindTemp.textContent = params["windtemp"];
+            row.appendChild(cellWindTemp);
+
+            const cellWind = document.createElement('td');
+            cellWind.className = 'meteo-table__cell';
+            cellWind.textContent = params["wind"];
+            row.appendChild(cellWind);
+
+            const cellBuller = document.createElement('td');
+            cellBuller.className = 'meteo-table__cell';
+            cellBuller.textContent = params["bullet"];
+            row.appendChild(cellBuller);
+
+            meteoTableBodies[0].appendChild(row);
+          })
+
+
+        })
+        .catch(error => {
+          console.error('Error:', error);
         });
 
         // Показываем кнопку "Принять как Действ."
@@ -244,9 +261,9 @@
           </div>
 
           <div class="result-panel__dates">
-            <div class="result-panel__date" id="header-data-1">ДДЧЧМ</div>
-            <div class="result-panel__date" id="header-pressure-1">ВВВВ</div>
-            <div class="result-panel__date" id="header-params-1">БББТТ</div>
+            <div class="result-panel__date" id="header-data-1"></div>
+            <div class="result-panel__date" id="header-pressure-1"></div>
+            <div class="result-panel__date" id="header-params-1"></div>
           </div>
 
           <div class="result-panel__header">
@@ -261,55 +278,55 @@
             <table class="meteo-table__content">
               <tbody class="meteo-table__body">
                 <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">02</td>
                   <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">04</td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                 </tr>
                 <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">08</td>
                   <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">12</td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                 </tr>
                 <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">16</td>
                   <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">20</td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                 </tr>
                 <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">24</td>
                   <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell">30</td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                   <td class="meteo-table__cell"></td>
                 </tr>
                 <tr class="meteo-table__row">
-                    <td class="meteo-table__cell">40</td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                  <td class="meteo-table__cell"></td>
+                </tr>
+                <tr class="meteo-table__row">
+                    <td class="meteo-table__cell"></td>
                     <td class="meteo-table__cell"></td>
                     <td class="meteo-table__cell"></td>
                     <td class="meteo-table__cell"></td>

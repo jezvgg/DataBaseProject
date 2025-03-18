@@ -10,11 +10,16 @@ services:
       POSTGRES_USER: postgres
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
+      - ./Database/drop_structure.sql:/drop_structure.sql
+      - ./Database/tables_stucture.sql:/tables_stucture.sql
+      - ./Database/insertion_values.sql:/insertion_values.sql
+      - ./Database/create_calculations.sql:/create_calculations.sql
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
-      - pgdata
+      pgdata:
+        ipv4_address: 10.5.0.2
     restart: always  
 
   pgadmin:
@@ -31,7 +36,8 @@ services:
       - ./pgadmin:/var/lib/pgadmin  
       - ./scripts:/scripts    
     networks:
-      - pgdata  
+      pgdata:
+        ipv4_address: 10.5.0.3 
     restart: always
     depends_on:
     - postgres
@@ -48,10 +54,16 @@ services:
     depends_on:
       - postgres
     networks:
-      - pgdata
+      pgdata:
+        ipv4_address: 10.5.0.4
     restart: unless-stopped
 
 networks:
   pgdata:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
 
 
