@@ -10,10 +10,7 @@ services:
       POSTGRES_USER: postgres
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
-      - ./Database/drop_structure.sql:/drop_structure.sql
-      - ./Database/tables_stucture.sql:/tables_stucture.sql
-      - ./Database/insertion_values.sql:/insertion_values.sql
-      - ./Database/create_calculations.sql:/create_calculations.sql
+      - ./script.sql:/script.sql
       - ./pgdata:/var/lib/postgresql/data
     ports:
       - "5432:5432"

@@ -83,17 +83,17 @@ WITH headers AS (
 
 
 -- Создаём временную таблицу, для вставки с фронта
-CREATE TEMP TABLE gosha.frontend_table (
-	user_id uuid default '1fae05b2-3c7c-4faf-9d45-1393e6107166',
-	height numeric(8,2) NOT NULL,
-    temperature numeric(8,2) NOT NULL,
-    pressure numeric(8,2) NOT NULL,
-    wind_direction numeric(8,2) NOT NULL,
-    bullet_speed numeric(8,2) NOT NULL,
-	logitude numeric(4,2) NOT NULL,
-	latitude numeric(4,2) NOT NULL,
-	device_name text
-)
+-- CREATE TEMP TABLE gosha.frontend_table (
+-- 	user_id uuid default '1fae05b2-3c7c-4faf-9d45-1393e6107166',
+-- 	height numeric(8,2) NOT NULL,
+--     temperature numeric(8,2) NOT NULL,
+--     pressure numeric(8,2) NOT NULL,
+--     wind_direction numeric(8,2) NOT NULL,
+--     bullet_speed numeric(8,2) NOT NULL,
+-- 	logitude numeric(4,2) NOT NULL,
+-- 	latitude numeric(4,2) NOT NULL,
+-- 	device_name text
+-- );
 
 -- Создание функций
 
@@ -370,3 +370,44 @@ begin
 	return res;
 end;
 $BODY$;
+
+
+CREATE OR REPLACE FUNCTION gosha."trCheckInput"()
+RETURNS TRIGGER 
+LANGUAGE 'plpgsql'
+AS $$
+begin
+    IF not gosha."fnInputValidate"(NEW.height, NEW.temperature, NEW.pressure, NEW.wind_speed, NEW.wind_direction) THEN
+        RAISE exception 'Invalid inputs';
+    END IF;
+    return NEW;
+end;
+$$;
+
+CREATE TRIGGER trInput
+BEFORE INSERT ON gosha.inputs
+FOR EACH ROW
+EXECUTE FUNCTION gosha."trCheckInput"();
+
+
+CREATE OR REPLACE FUNCTION gosha."trCalculateInput"()
+RETURNS TRIGGER 
+LANGUAGE 'plpgsql'
+AS $$
+declare
+    calculation_ gosha.calculation_table;
+begin
+    select gosha."fnHeaderCreate"(t2.height, t2.temperature, t2.pressure, t2.wind_speed, t2.wind_direction) as header,
+    gosha."fnCalculation"(t2.temperature, t2.bullet_speed, t2.bullet_speed, t3.name) as calculations 
+    from (select * from gosha.inputs where id = NEW.input_id) as t2 
+    join (select * from gosha.devices where id = NEW.device_id) as t3 on 1=1
+    into calculation_;
+    NEW.calculation = calculation_;
+    return NEW;
+end;
+$$;
+
+CREATE TRIGGER trCalculate
+BEFORE INSERT ON gosha.history
+FOR EACH ROW
+EXECUTE FUNCTION gosha."trCalculateInput"();

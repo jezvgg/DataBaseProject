@@ -78,15 +78,6 @@
             }
             
             const value = parseFloat(input.value);
-            /*const min = parseFloat(input.min);
-            const max = parseFloat(input.max);
-            
-            if (input.hasAttribute('min') && value < min) {
-              allValid = false;
-            }
-            if (input.hasAttribute('max') && value > max) {
-              allValid = false;
-            }*/
           }
         });
 
@@ -94,10 +85,16 @@
       }
 
       // Заполнение таблицы "МЕТЕО-11 ПРИБЛИЖЕННЫЙ" и отображение кнопки "Принять как Действ."
-      const meteoTableBodies = document.querySelectorAll('.meteo-table__body');
+      const tableNearest = document.getElementById('nearest');
+      const tableTruest = document.getElementById('truest');
       const acceptBtn = document.getElementById('acceptBtn');
 
       createBtn.addEventListener('click', () => {
+
+        const tableBodyNearest = tableNearest.querySelector('.meteo-table__body');
+        console.log(tableNearest);
+        console.log(tableBodyNearest);
+        tableBodyNearest.innerHTML = "";
 
         const data = {
           'height':document.getElementById('height').value,
@@ -107,61 +104,72 @@
           'bulletData':currentMode === 'dmk' ? 
             document.getElementById('windSpeed').value : 
             document.getElementById('bulletDrift').value,
-          'deviceName': currentMode === 'dmk' ? 'Десантный метео комплект' : 'Ветровое ружьё'
+          'device_id': currentMode === 'dmk' ? 'b07940a1-c522-4b9c-90ba-771c6869d2d7' : 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32'
         };
 
+        const input_id = crypto.randomUUID();
+        const history_id = crypto.randomUUID();
 
-        fetch(`http://localhost:3000/rpc/fnHeaderCreate?height_=${data["height"]}&temperature=${data["temperature"]}&pressure=${data["pressure"]}&wind_speed=${data["bulletData"]}&wind_direction=${data["windDirection"]}`)
-        .then(response => {
-          return response.json();
-        })
-        .then(data => {
-          document.getElementById("header-data-1").innerHTML = data["datetime"];
-          document.getElementById("header-pressure-1").innerHTML = data["height"];
-          document.getElementById("header-params-1").innerHTML = data["pressure_temperature"];
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
+        fetch('http://localhost:3000/inputs', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: `id=${input_id}&height=${data["height"]}&temperature=${data["temperature"]}&pressure=${data["pressure"]}&wind_speed=${data["bulletData"]}&wind_direction=${data["windDirection"]}&bullet_speed=${data["bulletData"]}`
+            })
+            .then(() => {
 
-        meteoTableBodies[0].innerHTML = '';
-        fetch(`http://localhost:3000/rpc/fnCalculation?temperature=${data["temperature"]}&wind_speed=${data["bulletData"]}&bullet_param=${data["bulletData"]}&device_name=${data["deviceName"]}`)
-        .then(response => {
-          return response.json();
-        })
-        .then(data => {
-          data.forEach(params => {
-            const row = document.createElement('tr');
-            row.className = 'meteo-table__row';
+            fetch('http://localhost:3000/history', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: `id=${history_id}&input_id=${input_id}&logitude=${(Math.random()*100).toFixed(2)}&latitude=${(Math.random()*100).toFixed(2)}&device_id=${data["device_id"]}`
+                })
+                .then(() => {
+                    fetch(`http://localhost:3000/history?id=eq.${history_id}&select=calculation`)
+                    .then(response => response.json())
+                    .then(data => {
+                      const headers = tableNearest.querySelectorAll(".result-panel__date");
+                      console.log(headers);
+                      headers[0].innerHTML = data[0]['calculation']['header']["datetime"];
+                      headers[1].innerHTML = data[0]['calculation']['header']["height"];
+                      headers[2].innerHTML = data[0]['calculation']['header']["pressure_temperature"];
 
-            const cellHeights = document.createElement('td');
-            cellHeights.className = 'meteo-table__cell';
-            cellHeights.textContent = params["height"];
-            row.appendChild(cellHeights);
+                      data[0]['calculation']['calculations']['heights']
+                      for (let i = 0; i < data[0]['calculation']['calculations']['heights'].length; i++) {
+                        const row = document.createElement('tr');
+                        row.className = 'meteo-table__row';
 
-            const cellWindTemp = document.createElement('td');
-            cellWindTemp.className = 'meteo-table__cell';
-            cellWindTemp.textContent = params["windtemp"];
-            row.appendChild(cellWindTemp);
+                        const cellHeights = document.createElement('td');
+                        cellHeights.className = 'meteo-table__cell';
+                        cellHeights.textContent = data[0]['calculation']['calculations']["heights"][i];
+                        row.appendChild(cellHeights);
 
-            const cellWind = document.createElement('td');
-            cellWind.className = 'meteo-table__cell';
-            cellWind.textContent = params["wind"];
-            row.appendChild(cellWind);
+                        const cellWindTemp = document.createElement('td');
+                        cellWindTemp.className = 'meteo-table__cell';
+                        cellWindTemp.textContent = data[0]['calculation']['calculations']["windtemp"][i];
+                        row.appendChild(cellWindTemp);
 
-            const cellBuller = document.createElement('td');
-            cellBuller.className = 'meteo-table__cell';
-            cellBuller.textContent = params["bullet"];
-            row.appendChild(cellBuller);
+                        const cellWind = document.createElement('td');
+                        cellWind.className = 'meteo-table__cell';
+                        cellWind.textContent = data[0]['calculation']['calculations']["wind"][i];
+                        row.appendChild(cellWind);
 
-            meteoTableBodies[0].appendChild(row);
-          })
+                        const cellBuller = document.createElement('td');
+                        cellBuller.className = 'meteo-table__cell';
+                        cellBuller.textContent = data[0]['calculation']['calculations']["bullet"][i];
+                        row.appendChild(cellBuller);
 
+                        tableBodyNearest.appendChild(row);
+                      }
+                    });
+                })
+              });
+        
+        console.log(history_id);
+        console.log(input_id);
 
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
 
         // Показываем кнопку "Принять как Действ."
         acceptBtn.classList.remove('meteo-btn--hidden');
@@ -253,7 +261,7 @@
         </div>
 
         <!-- Right Panel - МЕТЕО-11 приближенный -->
-        <div class="result-panel">
+        <div class="result-panel" id="nearest">
           <div class="result-panel__header">
             <div class="result-panel__title">
               МЕТЕО-11 <span class="result-panel__subtitle">приближённый</span>
@@ -261,9 +269,9 @@
           </div>
 
           <div class="result-panel__dates">
-            <div class="result-panel__date" id="header-data-1"></div>
-            <div class="result-panel__date" id="header-pressure-1"></div>
-            <div class="result-panel__date" id="header-params-1"></div>
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
           </div>
 
           <div class="result-panel__header">
@@ -277,136 +285,34 @@
           <div class="meteo-table">
             <table class="meteo-table__content">
               <tbody class="meteo-table__body">
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                    <td class="meteo-table__cell"></td>
-                    <td class="meteo-table__cell"></td>
-                    <td class="meteo-table__cell"></td>
-                    <td class="meteo-table__cell"></td>
-                  </tr>
               </tbody>
             </table>
           </div>
         </div>
 
         <!-- Right Panel - МЕТЕО-11 -->
-        <div class="result-panel">
+        <div class="result-panel" id="truest">
           <div class="result-panel__header">
             <div class="result-panel__title">МЕТЕО-11</div>
           </div>
 
           <div class="result-panel__dates">
-            <div class="result-panel__date">ДДЧЧМ</div>
-            <div class="result-panel__date">ДДЧЧМ</div>
-            <div class="result-panel__date">ДДЧЧМ</div>
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
           </div>
 
           <div class="result-panel__header">
             <div class="result-panel__dt-list">
-              <div class="result-panel__dt">dt</div>
-              <div class="result-panel__dt">dt</div>
-              <div class="result-panel__dt">dt</div>
+              <div class="result-panel__dt">ΔT</div>
+              <div class="result-panel__dt">𝛂W</div>
+              <div class="result-panel__dt">W</div>
             </div>
           </div>
 
           <div class="meteo-table">
             <table class="meteo-table__content">
               <tbody class="meteo-table__body">
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
-                <tr class="meteo-table__row">
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                  <td class="meteo-table__cell"></td>
-                </tr>
               </tbody>
             </table>
           </div>
@@ -431,110 +337,6 @@
           </thead>
           <tbody class="log__body">
             <!-- Dynamic content -->
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
-            <tr class="log__row">
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-              <td class="log__cell"></td>
-            </tr>
           </tbody>
         </table>
       </div>

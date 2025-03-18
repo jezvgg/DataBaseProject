@@ -141,12 +141,13 @@ CREATE TABLE IF NOT EXISTS gosha.const_table_links (
 -- История запросов
 CREATE TABLE IF NOT EXISTS gosha.history (
     id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-    user_id uuid NOT NULL,
+    user_id uuid NOT NULL default '1fae05b2-3c7c-4faf-9d45-1393e6107166',
     input_id uuid NOT NULL,
     data timestamp with time zone DEFAULT now() NOT NULL,
     logitude numeric(4,2) NOT NULL,
     latitude numeric(4,2) NOT NULL,
     device_id uuid NOT NULL,
+	calculation gosha.calculation_table,
 	FOREIGN KEY (user_id) REFERENCES gosha.users(id),
 	FOREIGN KEY (input_id) REFERENCES gosha.inputs(id),
 	FOREIGN KEY (device_id) REFERENCES gosha.devices(id)
