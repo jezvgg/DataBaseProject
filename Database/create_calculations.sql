@@ -81,20 +81,6 @@ WITH headers AS (
     FROM bullet_delts AS t1
     JOIN values AS t5 ON t1.next_id = t5.id;
 
-
--- Создаём временную таблицу, для вставки с фронта
--- CREATE TEMP TABLE gosha.frontend_table (
--- 	user_id uuid default '1fae05b2-3c7c-4faf-9d45-1393e6107166',
--- 	height numeric(8,2) NOT NULL,
---     temperature numeric(8,2) NOT NULL,
---     pressure numeric(8,2) NOT NULL,
---     wind_direction numeric(8,2) NOT NULL,
---     bullet_speed numeric(8,2) NOT NULL,
--- 	logitude numeric(4,2) NOT NULL,
--- 	latitude numeric(4,2) NOT NULL,
--- 	device_name text
--- );
-
 -- Создание функций
 
 -- Получить константу по ключу
@@ -279,7 +265,7 @@ begin
 	END IF;
 	res.datetime = gosha."fnHeaderGetData"();
 	res.height = gosha."fnHeaderGetHeight"(height_);
-	res.pressure_temperature = lpad(gosha."fnHeaderGetPressure"(pressure)::text, 3, '0') || lpad(gosha."fnHeaderGetTemperature"(temperature)::text, 2, '0');
+	res.pressure_temperature = lpad(round(gosha."fnHeaderGetPressure"(pressure))::text, 3, '0') || lpad(round(gosha."fnHeaderGetTemperature"(temperature))::text, 2, '0');
 	return res;
 end;
 $BODY$;

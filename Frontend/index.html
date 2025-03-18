@@ -27,9 +27,33 @@
             } else {
               tc.classList.add('meteo__tab--hidden');
             }
+            });
+
+            const logBody = document.querySelector('.log__body');
+            logBody.innerHTML = "";
+
+            fetch(`http://localhost:3000/history?select=data,inputs(height,temperature,pressure,wind_speed,bullet_speed)`)
+            .then(response => response.json())
+            .then(data => data.forEach(data_row => {
+              const row = document.createElement('tr');
+              row.className = 'log__row';
+
+              const cellData = document.createElement('td');
+              cellData.className = 'log__cell';
+              cellData.textContent = data_row['data'];
+              row.appendChild(cellData);
+
+              Object.keys(data_row['inputs']).forEach(key => {
+                const cell = document.createElement('td');
+                cell.className = 'log__cell';
+                cell.textContent = data_row['inputs'][key];
+                row.appendChild(cell);
+              });
+              
+              logBody.appendChild(row);
+            }));
           });
         });
-      });
 
       // Переключение режимов (ДМК / ВР)
       const modeButtons = document.querySelectorAll('.mode-selector__btn');
@@ -118,7 +142,6 @@
               body: `id=${input_id}&height=${data["height"]}&temperature=${data["temperature"]}&pressure=${data["pressure"]}&wind_speed=${data["bulletData"]}&wind_direction=${data["windDirection"]}&bullet_speed=${data["bulletData"]}`
             })
             .then(() => {
-
             fetch('http://localhost:3000/history', {
                   method: 'POST',
                   headers: {
@@ -130,6 +153,7 @@
                     fetch(`http://localhost:3000/history?id=eq.${history_id}&select=calculation`)
                     .then(response => response.json())
                     .then(data => {
+                      console.log(data);
                       const headers = tableNearest.querySelectorAll(".result-panel__date");
                       console.log(headers);
                       headers[0].innerHTML = data[0]['calculation']['header']["datetime"];
@@ -177,34 +201,8 @@
 
       acceptBtn.addEventListener('click', () => {
         // Добавляем запись в журнал измерений
-        const logBody = document.querySelector('.log__body');
-        const now = new Date();
-        const dateStr = `${now.getDate().toString().padStart(2, '0')}.${(now.getMonth() + 1).toString().padStart(2, '0')}.${now.getFullYear()} ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-        
-        const row = document.createElement('tr');
-        row.className = 'log__row';
-        
-        const data = [
-          dateStr,
-          document.getElementById('height').value,
-          document.getElementById('temperature').value,
-          document.getElementById('pressure').value,
-          document.getElementById('windDirection').value,
-          currentMode === 'dmk' ? 
-            document.getElementById('windSpeed').value : 
-            document.getElementById('bulletDrift').value
-        ];
-        
-        data.forEach(text => {
-          const cell = document.createElement('td');
-          cell.className = 'log__cell';
-          cell.textContent = text;
-          row.appendChild(cell);
-        });
-        
-        logBody.appendChild(row);
-        
-        alert('Принят как действующий метеобюллетень!');
+        tableTruest.querySelector('.result-panel__dates').innerHTML = tableNearest.querySelector('.result-panel__dates').innerHTML;
+        tableTruest.querySelector('.meteo-table__body').innerHTML = tableNearest.querySelector('.meteo-table__body').innerHTML;
       });
     });
 
