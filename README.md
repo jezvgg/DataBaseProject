@@ -3,7 +3,8 @@
 Проект реализующий планшет для расчётов артелерических выстрелов.
 Основная фишка проекта - полная реализация backend'а на Postgres с использованием postgREST и PLpgSQL.
 
-
+![](./Docs/_Images/tables_meteo.jpg)
+![](./Docs/_Images/history_meteo.jpg)
 
 ## Структура
 ```
