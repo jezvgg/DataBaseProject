@@ -2317,9 +2317,6 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '85b620d0-73ee-43
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a7086d5f-6597-42fc-a891-0c581cd9e985', '69112646-2a84-4a1d-be1b-0fa138dfab61');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c6d084f2-58bf-4618-87c3-8b0c692574c9', 'b8a90a55-1984-4e04-a6bc-5c6b6882281d');
 
-
-INSERT INTO gosha.inputs VALUES ('50f94903-a2f1-4992-81e2-e17659550494', 100.00, 26.50, 750.00, 5.00, 0.20, 460.00);
-
 INSERT INTO gosha.posts VALUES ('8a4067b1-c60f-49a5-ab28-1727d982ff6d', 'Рядовой');
 INSERT INTO gosha.posts VALUES ('097c2bc2-25a5-49a1-b065-a7f3071d4f29', 'Ефрейтор');
 INSERT INTO gosha.posts VALUES ('fa62f27d-e1c7-4371-8580-0914d935d2d7', 'Младший сержант');
@@ -2354,5 +2351,3 @@ INSERT INTO gosha.temperature_delta VALUES (40, 4.5);
 INSERT INTO gosha.temperature_delta VALUES (100, 4.5);
 
 INSERT INTO gosha.users VALUES ('1fae05b2-3c7c-4faf-9d45-1393e6107166', 'e479b4ae-1366-4250-8a26-33078c554bc7', 'Анонимный пользователь', 45);
-
-INSERT INTO gosha.history VALUES ('51454263-3456-453d-a3f4-ee8bb373451d', '1fae05b2-3c7c-4faf-9d45-1393e6107166', '50f94903-a2f1-4992-81e2-e17659550494', '2025-02-03 13:56:27.489842+00', 36.66, 60.02, 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
