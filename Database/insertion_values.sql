@@ -1,140 +1,3 @@
-DROP SCHEMA IF EXISTS gosha CASCADE;
-
-CREATE SCHEMA IF NOT EXISTS gosha;
-
-
--- Тип данных для интерполяции температуры
-CREATE TYPE gosha.interpolation AS
-(
-	x1 numeric(8, 2),
-	y1 numeric(8, 2),
-	x2 numeric(8, 2),
-	y2 numeric(8, 2)
-);
-
-
--- Тип для передачи данных
-CREATE TYPE gosha.input AS (
-    height numeric(8,2),
-    temperature numeric(8,2),
-    pressure numeric(8,2),
-    wind_speed numeric(8,2),
-    wind_direction numeric(8,2)
-);
-
-
--- Устройства измерения
-CREATE TABLE IF NOT EXISTS gosha.devices (
-    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-    name character varying(100) NOT NULL
-);
-
-
--- Должности
-CREATE TABLE IF NOT EXISTS gosha.posts (
-    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-    name character varying(100) NOT NULL
-);
-
-
--- Имена шапок для константных таблиц
-CREATE TABLE IF NOT EXISTS gosha.header_names (
-	id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-	name character(100) NOT NULL
-);
-
-
--- Имена константных таблиц
-CREATE TABLE IF NOT EXISTS gosha.const_table_names (
-	id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-	name character(100) NOT NULL
-);
-
-
--- Поправки температуры
-CREATE TABLE IF NOT EXISTS gosha.temperature_delta (
-	temperature numeric(8,2) NOT NULL PRIMARY KEY,
-	delta numeric(8,2) NOT NULL
-);
-
-
--- Константы
-CREATE TABLE IF NOT EXISTS gosha.constants
-(
-    id character varying(50) NOT NULL PRIMARY KEY,
-    constant character varying(100) NOT NULL
-);
-
-
--- Введёные метео значения
-CREATE TABLE IF NOT EXISTS gosha.inputs (
-    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-    height numeric(8,2) NOT NULL,
-    temperature numeric(8,2) NOT NULL,
-    pressure numeric(8,2) NOT NULL,
-    wind_speed numeric(8,2) NOT NULL,
-    wind_direction numeric(8,2) NOT NULL,
-    bullet_speed numeric(8,2) NOT NULL
-);
-
-
--- Значения константных таблиц
-CREATE TABLE IF NOT EXISTS gosha.const_table_values (
-	id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-	value numeric(8,2) NOT NULL,
-	name uuid NOT NULL,
-	device uuid,
-	FOREIGN KEY (name) REFERENCES gosha.const_table_names(id),
-	FOREIGN KEY (device) REFERENCES gosha.devices(id)
-);
-
-
--- Пользователи
-CREATE TABLE IF NOT EXISTS gosha.users (
-    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-    post uuid NOT NULL,
-    fullname character varying(100) NOT NULL,
-    age numeric(8,2) NOT NULL,
-	FOREIGN KEY (post) REFERENCES gosha.posts(id)
-);
-
-
--- Шапки константных таблиц
-CREATE TABLE IF NOT EXISTS gosha.const_table_headers (
-	id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-	value numeric(8,2) NOT NULL,
-	name uuid NOT NULL,
-	FOREIGN KEY (name) REFERENCES gosha.header_names(id)
-);
-
-
--- Связи для составления константных таблиц
-CREATE TABLE IF NOT EXISTS gosha.const_table_links (
-	id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-	value_id uuid NOT NULL,
-	header_id uuid NOT NULL,
-	FOREIGN KEY (value_id) REFERENCES gosha.const_table_values(id),
-	FOREIGN KEY (header_id) REFERENCES gosha.const_table_headers(id)
-);
-
-
--- История запросов
-CREATE TABLE IF NOT EXISTS gosha.history (
-    id uuid DEFAULT gen_random_uuid() NOT NULL PRIMARY KEY,
-    user_id uuid NOT NULL,
-    input_id uuid NOT NULL,
-    data timestamp with time zone DEFAULT now() NOT NULL,
-    logitude numeric(4,2) NOT NULL,
-    latitude numeric(4,2) NOT NULL,
-    device_id uuid NOT NULL,
-	FOREIGN KEY (user_id) REFERENCES gosha.users(id),
-	FOREIGN KEY (input_id) REFERENCES gosha.inputs(id),
-	FOREIGN KEY (device_id) REFERENCES gosha.devices(id)
-);	
-CREATE INDEX ix_history_user_id ON gosha.history(user_id);
-CREATE INDEX ix_history_input_id ON gosha.history(input_id);
-CREATE INDEX ix_history_device_id ON gosha.history(device_id);
-
 -- Данные для вставки
 INSERT INTO gosha.constants VALUES ('pressure', '750');
 INSERT INTO gosha.constants VALUES ('temperature', '15.9');
@@ -188,6 +51,7 @@ INSERT INTO gosha.const_table_headers VALUES ('5e1b4a1e-2884-4e65-8ed4-8ff0b5a5b
 INSERT INTO gosha.const_table_headers VALUES ('4c72a246-9225-4ffb-9d56-1f5c55268e64', 1, '33f5ba82-cd60-40f9-a3ad-2965e47d93ac');
 
 -- Таблица по ДМК
+INSERT INTO gosha.const_table_headers VALUES ('1c712699-fb9e-45df-b4f6-ff7943675b0b', 0, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('46322079-b68d-4b07-abce-98fa42cc8fca', 3, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('555f8a00-0039-46a9-aa43-f86468551d8f', 4, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('217a9ae1-890c-49a8-8fde-31ccd828cfb8', 5, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
@@ -201,7 +65,9 @@ INSERT INTO gosha.const_table_headers VALUES ('0e988140-5fb7-469c-9734-8da9838ed
 INSERT INTO gosha.const_table_headers VALUES ('e7112b1c-5a21-46f8-afca-1baa583856d7', 13, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('d0473e8e-1a7b-4817-9847-d3e5a745f498', 14, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('0acfe29a-4b57-47f2-a093-dd0b00461cf8', 15, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
+INSERT INTO gosha.const_table_headers VALUES ('912d9350-7b2b-495e-af1e-71de29b663c2', 100, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 -- Таблица во ВР
+INSERT INTO gosha.const_table_headers VALUES ('17e77ba7-57e8-42b1-a27f-b25c30ecf8bb', 0, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('ace15415-31cf-404f-bf2d-dc02fab70265', 40, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('21ab4019-88c6-44ac-9f44-12d338773c6b', 50, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('88a5f571-5d5b-4b3f-8628-fdefc414f1ec', 60, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
@@ -214,7 +80,7 @@ INSERT INTO gosha.const_table_headers VALUES ('8fb7e328-864b-45ce-8173-e728214f4
 INSERT INTO gosha.const_table_headers VALUES ('86e396ef-05da-4beb-b138-ccf3a44ab9bf', 130, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('6b7a00a5-12bd-41ae-8899-a04f57bee788', 140, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 INSERT INTO gosha.const_table_headers VALUES ('e1814372-2183-4d84-9eb4-5cc375bd23aa', 150, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
-
+INSERT INTO gosha.const_table_headers VALUES ('ac9054c5-f85a-43a4-b933-2b05cb4aafe8', 1000, 'a21ddce1-a3ce-46dc-b4cb-7c75a262209a');
 
 --ВР
 INSERT INTO gosha.const_table_values VALUES ('37200186-77e3-41c7-a56b-48b708b26a56', 1, '69dda9a8-a4e9-4f24-b8ba-a7593a4e66ef', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -263,6 +129,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e99229f8-c9cd-4b
 
 
 --200
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 3, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('9c1a3a42-ebd9-41f9-a03e-1d4a08491410', 3, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('ba41e203-5aae-40c5-b897-614822df03e3', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('dc2184f6-95db-44c3-8ef0-cfa316115b53', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -304,6 +183,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'eb3191a5-2f05-4c
 
 
 --400
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 15, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('4b9d061d-c273-4bbd-afad-4ed203958a60', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('3fa06c9d-8a8a-4316-b7c7-479b8b0b7145', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('31061422-eddb-4fda-928b-8fc47ecea74e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -345,6 +237,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'fbdad14f-f504-48
 
 
 -- 800
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('682403a2-022a-49c5-8421-ffc21252a4c5', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('10381c11-faad-4013-8054-0817958b0314', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('1eefb567-4464-491a-87d8-f46281239b9b', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -386,6 +291,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e45ab5c2-c799-4b
 
 
 --1200
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 16, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('e4700123-f55c-45d5-8938-92b878e6c566', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('e79aa5cd-0c4f-4f94-883a-a3aa9e07bdaf', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('1ca0fe12-81cd-4e43-bd53-d643d6584899', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -427,6 +345,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'dae6b472-dac6-49
 
 
 --1600
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 17, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('24e2e787-fce7-4aba-8b5c-d3159ae88454', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('460c3b61-03e7-43be-bea3-4c795e84c32f', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('ea57b8ec-4890-44e3-ad7a-eb6c1b5bfc3a', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -468,6 +399,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'f7f3f97d-044c-4c
 
 
 --2000
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 18, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('8ed9d3fa-2c6c-4928-9124-42fe605012fa', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('4eb18a75-ea61-4687-a5ed-92ffe274b5f5', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('be8eabfd-e93d-4761-83dd-043cc8f83eaf', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -509,6 +453,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'b82c30aa-9e5d-4a
 
 
 -- 2400
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('987c4d40-09c0-42bc-ac40-b75bcef51685', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('289ab0b8-c788-443b-baa4-70fec7217a3f', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('7301c233-010b-4fe8-8de5-7d0d04f0aa5e', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -550,6 +507,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c76903a8-c3bc-43
 
 
 -- 3000
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 19, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('ef948d59-2d11-496e-b3c5-029cbb3afaae', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('c6533ad3-9f4e-4020-8bef-5b13d4125335', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('1a6aed95-77d9-4612-ae79-83b6efd98a27', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -591,6 +561,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '0550c1ca-38ad-49
 
 
 -- 4000
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_values VALUES (id2, 20, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '17e77ba7-57e8-42b1-a27f-b25c30ecf8bb');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ac9054c5-f85a-43a4-b933-2b05cb4aafe8');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('442e7b68-685a-46d5-a6b9-069147eae090', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('45c8418b-7308-446e-a191-3e1f2b7b853e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
 INSERT INTO gosha.const_table_values VALUES ('032860df-6545-4e72-b534-1f789815e751', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
@@ -632,6 +615,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'e6273cc4-1879-4b
 
 
 -- 200
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 22, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'fa3df7e9-c4cc-4a84-89d3-0a6307f75e3b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('11359b2e-c4de-4d95-a77e-df49fd22ca53', 4, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('5b1b1981-d420-43d5-b854-8d6120a001a1', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('f58cd8ab-6d60-4027-b23c-243d1c8e2bdb', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -676,6 +672,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'fc1b1f77-cdd5-44
 
 
 -- 400
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 27, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '19f254bd-f737-4661-b037-faaddb2df77e');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('004d65e3-8e24-4fd3-a79a-7111de505b4e', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('ca757a06-3a0f-4948-ad05-f6cdbfe7e10d', 7, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('8cfd9e20-0bfd-4e6f-8717-e4e14f487a91', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -720,6 +729,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c6caf64a-bd5d-42
 
 
 -- 800
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 28, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '9c248174-82cf-485f-a14b-d496c1e6bad3');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('0011b034-cc6c-4ba7-bea5-17a4a1492cb7', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('b6ce1405-c2d1-4a2e-a6c6-c73792e11545', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('baae83b3-146e-46da-88a4-41f02b23ce7e', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -764,6 +786,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '3ed0a20d-1fc7-4a
 
 
 -- 1200
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 30, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'ae8de529-4081-436b-8944-420028fa3cf4');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('4bea9541-fe98-44c7-beb4-aaf4ff93b2d8', 5, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('a1a777f6-d6b8-4157-ab20-ce5f54d271b3', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('c12b6571-38a5-441b-afea-3c9d26128335', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -808,6 +843,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '75043b6c-1728-4b
 
 
 -- 1600
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '845b0477-bc67-40be-824a-ef933fd5f939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('b1aef7fa-1676-4b99-81fb-d7ba024d3a5e', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('4b31e93f-8714-48a4-86ef-32685c13c932', 8, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('6486d3b3-821e-4d8b-8f4a-00a8e20cdd65', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -852,6 +900,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '8a011b69-c3c2-4f
 
 
 -- 2000
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 32, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '29f4ffde-281e-402b-be8a-1621e03504c0');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('fc9dc852-5a13-482b-aa43-42563f9eaf03', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('5b01a9c6-e8c8-45c6-8a49-15d1c59e4a21', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('047247c4-f942-4c05-bc3a-e410a248dfee', 11, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -896,6 +957,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a6f23343-043a-4f
 
 
 -- 2400
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 36, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, 'bf109d15-5e82-4363-9484-9b0f67141e3d');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('e43167af-cd28-4f0f-9bec-3cf77fa567ab', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('0ddc50df-9f9d-48f3-a1ce-88f77a4499f1', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('8fa79274-989f-4d88-8c84-690908c31f73', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -940,6 +1014,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '12fbcbbe-f55b-40
 
 
 -- 3000
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 36, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '6f95200d-31a2-4f01-be6b-f8e344a2e402');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('af57b876-a499-4777-aaee-9a66f7787237', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('d40abe13-65e4-4b39-8acc-b72dd8c25b88', 9, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('9b4c2d73-23af-41f6-8cec-b4ebab5abf73', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -984,6 +1071,19 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '2e365732-c690-49
 
 
 -- 4000
+do $$
+declare
+	id1 uuid default gen_random_uuid();
+	id2 uuid default gen_random_uuid();
+begin
+INSERT INTO gosha.const_table_values VALUES (id1, 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_values VALUES (id2, 36, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '5b0c31e5-ce5c-4f20-a538-3eee8e183939');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id1, '1c712699-fb9e-45df-b4f6-ff7943675b0b');
+INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), id2, '912d9350-7b2b-495e-af1e-71de29b663c2');
+end$$;
+
 INSERT INTO gosha.const_table_values VALUES ('38a47f64-a9a5-4960-b859-14af3bfce819', 6, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('51aa6b58-79fc-444d-845c-71ba0578d8a7', 10, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
 INSERT INTO gosha.const_table_values VALUES ('0d1c8e9b-76e8-44ab-9bdb-8321ff3d5eda', 12, 'b6669f4e-6811-4920-a57a-14318d7ba664', 'b07940a1-c522-4b9c-90ba-771c6869d2d7');
@@ -2217,9 +2317,6 @@ INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), '85b620d0-73ee-43
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'a7086d5f-6597-42fc-a891-0c581cd9e985', '69112646-2a84-4a1d-be1b-0fa138dfab61');
 INSERT INTO gosha.const_table_links VALUES (gen_random_uuid(), 'c6d084f2-58bf-4618-87c3-8b0c692574c9', 'b8a90a55-1984-4e04-a6bc-5c6b6882281d');
 
-
-INSERT INTO gosha.inputs VALUES ('50f94903-a2f1-4992-81e2-e17659550494', 100.00, 26.50, 750.00, 5.00, 0.20, 460.00);
-
 INSERT INTO gosha.posts VALUES ('8a4067b1-c60f-49a5-ab28-1727d982ff6d', 'Рядовой');
 INSERT INTO gosha.posts VALUES ('097c2bc2-25a5-49a1-b065-a7f3071d4f29', 'Ефрейтор');
 INSERT INTO gosha.posts VALUES ('fa62f27d-e1c7-4371-8580-0914d935d2d7', 'Младший сержант');
@@ -2253,334 +2350,4 @@ INSERT INTO gosha.temperature_delta VALUES (30, 3.5);
 INSERT INTO gosha.temperature_delta VALUES (40, 4.5);
 INSERT INTO gosha.temperature_delta VALUES (100, 4.5);
 
-INSERT INTO gosha.users VALUES ('1fae05b2-3c7c-4faf-9d45-1393e6107166', 'e479b4ae-1366-4250-8a26-33078c554bc7', 'Воловиков Александр Сергеевич', 45);
-
-INSERT INTO gosha.history VALUES ('51454263-3456-453d-a3f4-ee8bb373451d', '1fae05b2-3c7c-4faf-9d45-1393e6107166', '50f94903-a2f1-4992-81e2-e17659550494', '2025-02-03 13:56:27.489842+00', 36.66, 60.02, 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32');
-
-
--- Создание представлений
-create view gosha.wind_temperature_delta as
-WITH headers AS (
-        SELECT t1.id, t1.value, t2.name 
-        FROM gosha.const_table_headers AS t1
-        JOIN gosha.header_names AS t2 ON t1.name = t2.id
-    ),
-    heights AS (
-        SELECT t2.value AS heights, t1.value_id AS next_id 
-        FROM gosha.const_table_links AS t1
-        JOIN (SELECT * FROM headers WHERE name = 'heights') AS t2 ON t1.header_id = t2.id
-    ),
-    temp_delts AS (
-        SELECT t1.heights, t3.value AS temp_delts, t2.value_id AS next_id 
-        FROM heights AS t1
-        JOIN gosha.const_table_links AS t2 ON t1.next_id = t2.value_id
-        JOIN (SELECT * FROM headers WHERE name = 'temp_delts') AS t3 ON t2.header_id = t3.id
-    ),
-    is_possitives AS (
-        SELECT t1.heights, t1.temp_delts, t3.value AS is_possitive, t2.value_id AS next_id 
-        FROM temp_delts AS t1
-        JOIN gosha.const_table_links AS t2 ON t1.next_id = t2.value_id
-        JOIN (SELECT * FROM headers WHERE name = 'is_possitive') AS t3 ON t2.header_id = t3.id
-    ),
-	values as (
-		select t1.* from gosha.const_table_values as t1
-		join gosha.const_table_names as t2 on t1.name = t2.id
-		where t2.name = 'temperature_delts'
-	)
-    SELECT t1.heights, t1.temp_delts, t1.is_possitive, t5.value 
-    FROM is_possitives AS t1
-    JOIN values AS t5 ON t1.next_id = t5.id;
-
-
-create view gosha.wind_direction_delta as
-WITH headers AS (
-        SELECT t1.id, t1.value, t2.name 
-        FROM gosha.const_table_headers AS t1
-        JOIN gosha.header_names AS t2 ON t1.name = t2.id
-    ),
-	heights AS (
-        SELECT t2.value AS heights, t1.value_id AS next_id 
-        FROM gosha.const_table_links AS t1
-        JOIN (SELECT * FROM headers WHERE name = 'heights') AS t2 ON t1.header_id = t2.id
-    ),
-	values as (
-		select t1.id, t1.value, t3.name from gosha.const_table_values as t1
-		join gosha.const_table_names as t2 on t1.name = t2.id
-		left join gosha.devices as t3 on t1.device = t3.id
-		where t2.name = 'wind_direction_delts'
-	)
-	SELECT t1.heights, t5.value, t5.name as device 
-    FROM heights AS t1
-    JOIN values AS t5 ON t1.next_id = t5.id;
-
-
-create view gosha.bullet_delta as
-WITH headers AS (
-        SELECT t1.id, t1.value, t2.name 
-        FROM gosha.const_table_headers AS t1
-        JOIN gosha.header_names AS t2 ON t1.name = t2.id
-    ),
-	heights AS (
-        SELECT t2.value AS heights, t1.value_id AS next_id 
-        FROM gosha.const_table_links AS t1
-        JOIN (SELECT * FROM headers WHERE name = 'heights') AS t2 ON t1.header_id = t2.id
-    ),
-	bullet_delts AS (
-        SELECT t1.heights, t3.value AS bullet_delts, t2.value_id AS next_id 
-        FROM heights AS t1
-        JOIN gosha.const_table_links AS t2 ON t1.next_id = t2.value_id
-        JOIN (SELECT * FROM headers WHERE name = 'bullet_delts') AS t3 ON t2.header_id = t3.id
-    ),
-	values as (
-		select t1.id, t1.value, t3.name from gosha.const_table_values as t1
-		join gosha.const_table_names as t2 on t1.name = t2.id
-		left join gosha.devices as t3 on t1.device = t3.id
-		where t2.name = 'bullet_delts'
-	)
-	SELECT t1.heights, t1.bullet_delts, t5.value, t5.name as device 
-    FROM bullet_delts AS t1
-    JOIN values AS t5 ON t1.next_id = t5.id;
-
--- Создание функций
-
--- Получить константу по ключу
-CREATE OR REPLACE FUNCTION gosha."fnGetConstant"(
-	const_name character varying(50)
-	)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	if const_name not in (select id from gosha.constants) then
-		raise exception 'Key not in constants!';
-	end if;
-	return (select constant from gosha.constants where id = const_name);
-end;
-$BODY$;
-
-
--- Получить дата-время в нужном формате
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetData"(
-	datetime timestamp with time zone
-	)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	return substring(to_char(datetime, 'DDHHMI'), 1, 5);
-end;
-$BODY$;
-
-
--- Получить текущее дата-время в нужном формате
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetData"(
-	)
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	return gosha."fnHeaderGetData"(now());
-end;
-$BODY$;
-
-
--- Форматировать высоту
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetHeight"(
-	height numeric(8, 0))
-    RETURNS character varying
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	return lpad(round(height)::text, 4, '0');
-end;
-$BODY$;
-
-
--- Получить константу для давления
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetPressure"(
-	)
-    RETURNS numeric
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	return gosha."fnGetConstant"('pressure')::numeric(8,0);
-end;
-$BODY$;
-
-
--- Получить рассчитаное давление
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetPressure"(
-	pressure numeric)
-    RETURNS numeric
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-DECLARE 
-	pressure_delta numeric;
-begin
-	pressure_delta := pressure - gosha."fnHeaderGetPressure"();
-	IF pressure_delta < 0 THEN
-		pressure_delta := pressure_delta - 500;
-	END IF;
-	pressure_delta := abs(pressure_delta);
-	return pressure_delta;
-end;
-$BODY$;
-
-
--- Получить константу для температуры
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetTemperature"(
-	)
-    RETURNS numeric
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	return gosha."fnGetConstant"('temperature')::numeric(8,0);
-end;
-$BODY$;
-
-
--- Получить рассчитаную температуру
-CREATE OR REPLACE FUNCTION gosha."fnHeaderGetTemperature"(
-	our_temperature numeric)
-    RETURNS numeric
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-DECLARE
-	params gosha.interpolation;
-	delta numeric(8, 2);
-begin
-	
-	IF our_temperature > 40 THEN
-        RAISE EXCEPTION 'Error: impossible temrepature for artilery';
-    END IF; 
-	SELECT * FROM gosha.temperature_delta WHERE temperature <= our_temperature ORDER BY temperature DESC LIMIT 1 INTO params.x1,params.y1;
-	SELECT * FROM gosha.temperature_delta WHERE temperature > our_temperature ORDER BY temperature LIMIT 1 INTO params.x2,params.y2;
-	delta:= ((params.y1*params.x2 - params.y2*params.x1)/(params.x2-params.x1))+((params.y2 - params.y1)/(params.x2 - params.x1))*our_temperature;
-	return round((our_temperature + delta) - gosha."fnHeaderGetTemperature"());
-end;
-$BODY$;
-
-
--- Функция валидации данных
-CREATE OR REPLACE FUNCTION gosha."fnInputValidate"(
-	height numeric(8,2),
-    temperature numeric(8,2),
-    pressure numeric(8,2),
-    wind_speed numeric(8,2),
-    wind_direction numeric(8,2)
-	)
-    RETURNS boolean
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	IF temperature < gosha."fnGetConstant"('min_temperature')::numeric OR 
-		temperature > gosha."fnGetConstant"('max_temperature')::numeric OR 
-		pressure > gosha."fnGetConstant"('max_pressure')::numeric OR 
-		pressure < gosha."fnGetConstant"('min_pressure')::numeric OR 
-		wind_speed > gosha."fnGetConstant"('max_wind')::numeric OR 
-		wind_speed < gosha."fnGetConstant"('min_wind')::numeric OR THEN
-		return false;
-	END IF;
-	return true;
-end;
-$BODY$;
-
-
--- Сделать расчёты
-CREATE OR REPLACE FUNCTION gosha."fnHeaderCreate"(
-	height_ numeric(8,2),
-    temperature numeric(8,2),
-    pressure numeric(8,2),
-    wind_speed numeric(8,2),
-    wind_direction numeric(8,2)
-	)
-    RETURNS TABLE(datetime character(5), height character(4), params character(5))
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-begin
-	IF not gosha."fnInputValidate"(height_, temperature, pressure, wind_speed, wind_direction) THEN
-		raise exception 'Неккоректные данные!';
-	END IF;
-	return query select gosha."fnHeaderGetData"()::character(5), gosha."fnHeaderGetHeight"(height_)::character(4), (lpad(gosha."fnHeaderGetPressure"(pressure)::text, 3, '0') || lpad(gosha."fnHeaderGetTemperature"(temperature)::text, 2, '0'))::character(5);
-end;
-$BODY$;
-
-
--- Процедура получения разницы ветрянной температуры
-CREATE OR REPLACE PROCEDURE gosha."prGetWindTempDelta"(
-	IN temp_delta numeric,
-	INOUT delts numeric[] default array[]::numeric[])
-LANGUAGE 'plpgsql'
-AS $BODY$
-declare
-	isabove numeric(8,2);
-begin
-	isabove := case when temp_delta > 0 then 1 else 0 end;
-	select array_agg(t1.value + t2.value) from (select heights, value from gosha.wind_temperature_delta where temp_delts = floor(abs(temp_delta) / 10) * 10.0 and is_possitive = isabove) as t1
-	inner join (select heights, value from gosha.wind_temperature_delta where temp_delts = abs(temp_delta) % 10 and is_possitive = isabove) as t2
-	on t1.heights = t2.heights
-	into delts;
-end;
-$BODY$;
-
-
--- Рассчёт направленя среднего ветра
-CREATE OR REPLACE FUNCTION gosha."fnGetAvgWind"(
-	wind_speed numeric(8, 0),
-	device_name text)
-    RETURNS numeric[]
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-declare
-	delts numeric[] default array[]::numeric[];
-begin
-	select array_agg(value + wind_speed) from gosha.wind_direction_delta where device=device_name into delts;
-	return delts;
-end;
-$BODY$;
-
-
--- Рассчёт направленя среднего ветра
-CREATE OR REPLACE FUNCTION gosha."fnGetBullet"(
-	bullet_speed numeric(8, 2),
-	device_name text)
-    RETURNS numeric[]
-    LANGUAGE 'plpgsql'
-    COST 100
-    VOLATILE PARALLEL UNSAFE
-AS $BODY$
-declare
-	delts numeric[] default array[]::numeric[];
-begin
-	select array_agg( x1 + (((bullet_speed - y1)*(x2-x1))/(y2-y1)) ) as result
-	from (select heights, min(bullet_delts) as y2, min(value) as x2 from gosha.bullet_delta where device=device_name and bullet_delts >= bullet_speed group by heights) as t1
-	join (select heights, max(bullet_delts) as y1, max(value) as x1 from gosha.bullet_delta where device=device_name and bullet_delts < bullet_speed group by heights) as t2 on t1.heights = t2.heights
-	into delts;
-	return delts;
-end;
-$BODY$;
-
--- 'Десантный метео комплект';
-select gosha."fnGetBullet"(7.5, 'Десантный метео комплект');
+INSERT INTO gosha.users VALUES ('1fae05b2-3c7c-4faf-9d45-1393e6107166', 'e479b4ae-1366-4250-8a26-33078c554bc7', 'Анонимный пользователь', 45);

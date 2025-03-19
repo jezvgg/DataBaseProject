@@ -1,0 +1,66 @@
+version: "3.0"
+services:
+
+  postgres:
+    user: root
+    image: postgres:16.3
+    container_name: "postgres"
+    environment:
+      POSTGRES_PASSWORD: 1122334455
+      POSTGRES_USER: postgres
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./script.sql:/script.sql
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      pgdata:
+        ipv4_address: 10.5.0.2
+    restart: always  
+
+  pgadmin:
+    user: root
+    container_name: "pgadmin"
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jezv@yandex.ru
+      PGADMIN_DEFAULT_PASSWORD: 1122334455
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin  
+      - ./scripts:/scripts    
+    networks:
+      pgdata:
+        ipv4_address: 10.5.0.3 
+    restart: always
+    depends_on:
+    - postgres
+
+  restapi:
+    image: postgrest/postgrest:v9.0.0
+    container_name: "restapi"
+    environment:
+      PGRST_DB_URI: postgres://postgres:1122334455@postgres:5432/postgres
+      PGRST_DB_SCHEMA: gosha
+      PGRST_DB_ANON_ROLE: postgres
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+    networks:
+      pgdata:
+        ipv4_address: 10.5.0.4
+    restart: unless-stopped
+
+networks:
+  pgdata:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
+
+

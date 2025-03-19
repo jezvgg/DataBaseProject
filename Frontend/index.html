@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Метеосистема</title>
+  <link rel="stylesheet" href="./main.css" />
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Переключение вкладок (МЕТЕОБЮЛЛЕТЕНЬ / ЖУРНАЛ ИЗМЕРЕНИЙ)
+      const tabButtons = document.querySelectorAll('.meteo__nav-btn');
+      const tabContents = document.querySelectorAll('.meteo__tab');
+
+      tabButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          // Сбрасываем класс active на всех кнопках
+          tabButtons.forEach(b => b.classList.remove('meteo__nav-btn--active'));
+          // Назначаем active на текущую
+          btn.classList.add('meteo__nav-btn--active');
+
+          const targetTab = btn.getAttribute('data-tab');
+
+          // Показываем нужный блок, скрываем остальные
+          tabContents.forEach(tc => {
+            if (tc.id === targetTab) {
+              tc.classList.remove('meteo__tab--hidden');
+            } else {
+              tc.classList.add('meteo__tab--hidden');
+            }
+            });
+
+            const logBody = document.querySelector('.log__body');
+            logBody.innerHTML = "";
+
+            fetch(`http://localhost:3000/history?select=data,inputs(height,temperature,pressure,wind_speed,bullet_speed)`)
+            .then(response => response.json())
+            .then(data => data.forEach(data_row => {
+              const row = document.createElement('tr');
+              row.className = 'log__row';
+
+              const cellData = document.createElement('td');
+              cellData.className = 'log__cell';
+              cellData.textContent = data_row['data'];
+              row.appendChild(cellData);
+
+              Object.keys(data_row['inputs']).forEach(key => {
+                const cell = document.createElement('td');
+                cell.className = 'log__cell';
+                cell.textContent = data_row['inputs'][key];
+                row.appendChild(cell);
+              });
+              
+              logBody.appendChild(row);
+            }));
+          });
+        });
+
+      // Переключение режимов (ДМК / ВР)
+      const modeButtons = document.querySelectorAll('.mode-selector__btn');
+      const windSpeedGroup = document.getElementById('windSpeedGroup');
+      const bulletDriftGroup = document.getElementById('bulletDriftGroup');
+      let currentMode = 'dmk'; // По умолчанию ДМК
+
+      modeButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          modeButtons.forEach(b => b.classList.remove('mode-selector__btn--active'));
+          btn.classList.add('mode-selector__btn--active');
+          currentMode = btn.getAttribute('data-mode');
+
+          if (currentMode === 'dmk') {
+            // Отображаем "Скорость ветра"
+            windSpeedGroup.style.display = 'flex';
+            // Скрываем "Дальность сноса пуль"
+            bulletDriftGroup.style.display = 'none';
+          } else {
+            // Скрываем "Скорость ветра"
+            windSpeedGroup.style.display = 'none';
+            // Отображаем "Дальность сноса пуль"
+            bulletDriftGroup.style.display = 'flex';
+          }
+
+          checkFormValidity();
+        });
+      });
+
+      // Валидация формы
+      const inputs = document.querySelectorAll('.input-form__field');
+      const createBtn = document.getElementById('createMeteo11');
+
+      inputs.forEach(input => {
+        input.addEventListener('input', checkFormValidity);
+      });
+
+      function checkFormValidity() {
+        let allValid = true;
+
+        inputs.forEach(input => {
+          // Проверяем только те инпуты, которые видимы (не скрыты через display: none)
+          if (input.parentElement.style.display !== 'none') {
+            if (input.value.trim() === '') {
+              allValid = false;
+            }
+            
+            const value = parseFloat(input.value);
+          }
+        });
+
+        createBtn.disabled = !allValid;
+      }
+
+      // Заполнение таблицы "МЕТЕО-11 ПРИБЛИЖЕННЫЙ" и отображение кнопки "Принять как Действ."
+      const tableNearest = document.getElementById('nearest');
+      const tableTruest = document.getElementById('truest');
+      const acceptBtn = document.getElementById('acceptBtn');
+
+      createBtn.addEventListener('click', () => {
+
+        const tableBodyNearest = tableNearest.querySelector('.meteo-table__body');
+        console.log(tableNearest);
+        console.log(tableBodyNearest);
+        tableBodyNearest.innerHTML = "";
+
+        const data = {
+          'height':document.getElementById('height').value,
+          'temperature':document.getElementById('temperature').value,
+          'pressure':document.getElementById('pressure').value,
+          'windDirection':document.getElementById('windDirection').value,
+          'bulletData':currentMode === 'dmk' ? 
+            document.getElementById('windSpeed').value : 
+            document.getElementById('bulletDrift').value,
+          'device_id': currentMode === 'dmk' ? 'b07940a1-c522-4b9c-90ba-771c6869d2d7' : 'c7237b8d-8b89-46ed-a774-f0c7f4ff7e32'
+        };
+
+        const input_id = crypto.randomUUID();
+        const history_id = crypto.randomUUID();
+
+        fetch('http://localhost:3000/inputs', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+              },
+              body: `id=${input_id}&height=${data["height"]}&temperature=${data["temperature"]}&pressure=${data["pressure"]}&wind_speed=${data["bulletData"]}&wind_direction=${data["windDirection"]}&bullet_speed=${data["bulletData"]}`
+            })
+            .then(() => {
+            fetch('http://localhost:3000/history', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                  },
+                  body: `id=${history_id}&input_id=${input_id}&logitude=${(Math.random()*100).toFixed(2)}&latitude=${(Math.random()*100).toFixed(2)}&device_id=${data["device_id"]}`
+                })
+                .then(() => {
+                    fetch(`http://localhost:3000/history?id=eq.${history_id}&select=calculation`)
+                    .then(response => response.json())
+                    .then(data => {
+                      console.log(data);
+                      const headers = tableNearest.querySelectorAll(".result-panel__date");
+                      console.log(headers);
+                      headers[0].innerHTML = data[0]['calculation']['header']["datetime"];
+                      headers[1].innerHTML = data[0]['calculation']['header']["height"];
+                      headers[2].innerHTML = data[0]['calculation']['header']["pressure_temperature"];
+
+                      data[0]['calculation']['calculations']['heights']
+                      for (let i = 0; i < data[0]['calculation']['calculations']['heights'].length; i++) {
+                        const row = document.createElement('tr');
+                        row.className = 'meteo-table__row';
+
+                        const cellHeights = document.createElement('td');
+                        cellHeights.className = 'meteo-table__cell';
+                        cellHeights.textContent = data[0]['calculation']['calculations']["heights"][i];
+                        row.appendChild(cellHeights);
+
+                        const cellWindTemp = document.createElement('td');
+                        cellWindTemp.className = 'meteo-table__cell';
+                        cellWindTemp.textContent = data[0]['calculation']['calculations']["windtemp"][i];
+                        row.appendChild(cellWindTemp);
+
+                        const cellWind = document.createElement('td');
+                        cellWind.className = 'meteo-table__cell';
+                        cellWind.textContent = data[0]['calculation']['calculations']["wind"][i];
+                        row.appendChild(cellWind);
+
+                        const cellBuller = document.createElement('td');
+                        cellBuller.className = 'meteo-table__cell';
+                        cellBuller.textContent = data[0]['calculation']['calculations']["bullet"][i];
+                        row.appendChild(cellBuller);
+
+                        tableBodyNearest.appendChild(row);
+                      }
+                    });
+                })
+              });
+        
+        console.log(history_id);
+        console.log(input_id);
+
+
+        // Показываем кнопку "Принять как Действ."
+        acceptBtn.classList.remove('meteo-btn--hidden');
+      });
+
+      acceptBtn.addEventListener('click', () => {
+        // Добавляем запись в журнал измерений
+        tableTruest.querySelector('.result-panel__dates').innerHTML = tableNearest.querySelector('.result-panel__dates').innerHTML;
+        tableTruest.querySelector('.meteo-table__body').innerHTML = tableNearest.querySelector('.meteo-table__body').innerHTML;
+      });
+    });
+
+
+  </script>
+</head>
+<body>
+  <div class="meteo">
+    <nav class="meteo__nav">
+      <button class="meteo__nav-btn meteo__nav-btn--active" data-tab="meteo-bulletin">МЕТЕОБЮЛЛЕТЕНЬ</button>
+      <button class="meteo__nav-btn" data-tab="measurement-log">ЖУРНАЛ ИЗМЕРЕНИЙ</button>
+    </nav>
+
+    <div class="meteo__tab" id="meteo-bulletin">
+      <div class="meteo__content">
+        <!-- Left Panel -->
+        <div class="input-panel">
+          <div class="input-panel__header">
+            <div class="mode-selector">
+              <button class="mode-selector__btn mode-selector__btn--active" data-mode="dmk">ДМК</button>
+              <button class="mode-selector__btn" data-mode="vr">ВР</button>
+            </div>
+          </div>
+
+          <div class="input-form">
+            <div class="input-form__group">
+              <label class="input-form__label" for="height">Высота метеопоста</label>
+              <input class="input-form__field" type="number" id="height" name="height" step="1" value="100">
+            </div>
+            <div class="input-form__group">
+              <label class="input-form__label" for="temperature">Температура</label>
+              <input class="input-form__field" type="number" id="temperature" name="temperature" step="0.1" value="15">
+            </div>
+            <div class="input-form__group">
+              <label class="input-form__label" for="pressure">Давление</label>
+              <input class="input-form__field" type="number" id="pressure" name="pressure" step="1" value="750">
+            </div>
+            <div class="input-form__group">
+              <label class="input-form__label" for="windDirection">Направление ветра</label>
+              <input class="input-form__field" type="number" id="windDirection" name="windDirection" step="1" value="0">
+            </div>
+            <div class="input-form__group" id="windSpeedGroup">
+              <label class="input-form__label" for="windSpeed">Скорость ветра</label>
+              <input class="input-form__field" type="number" id="windSpeed" name="windSpeed" step="1" value="0">
+            </div>
+            <div class="input-form__group" id="bulletDriftGroup" style="display: none;">
+              <label class="input-form__label" for="bulletDrift">Дальность сноса пуль</label>
+              <input class="input-form__field" type="number" id="bulletDrift" name="bulletDrift" step="1" value="0">
+            </div>
+          </div>
+
+          <button class="meteo-btn meteo-btn--primary" id="createMeteo11">СОСТАВИТЬ МЕТЕО-11</button>
+          <button class="meteo-btn meteo-btn--red" id="acceptBtn">ПРИНЯТЬ КАК ДЕЙСТВ.</button>
+        </div>
+
+        <!-- Right Panel - МЕТЕО-11 приближенный -->
+        <div class="result-panel" id="nearest">
+          <div class="result-panel__header">
+            <div class="result-panel__title">
+              МЕТЕО-11 <span class="result-panel__subtitle">приближённый</span>
+            </div>
+          </div>
+
+          <div class="result-panel__dates">
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
+          </div>
+
+          <div class="result-panel__header">
+            <div class="result-panel__dt-list">
+              <div class="result-panel__dt">ΔT</div>
+              <div class="result-panel__dt">𝛂W</div>
+              <div class="result-panel__dt">W</div>
+            </div>
+          </div>
+
+          <div class="meteo-table">
+            <table class="meteo-table__content">
+              <tbody class="meteo-table__body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Panel - МЕТЕО-11 -->
+        <div class="result-panel" id="truest">
+          <div class="result-panel__header">
+            <div class="result-panel__title">МЕТЕО-11</div>
+          </div>
+
+          <div class="result-panel__dates">
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
+            <div class="result-panel__date"></div>
+          </div>
+
+          <div class="result-panel__header">
+            <div class="result-panel__dt-list">
+              <div class="result-panel__dt">ΔT</div>
+              <div class="result-panel__dt">𝛂W</div>
+              <div class="result-panel__dt">W</div>
+            </div>
+          </div>
+
+          <div class="meteo-table">
+            <table class="meteo-table__content">
+              <tbody class="meteo-table__body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Журнал измерений tab -->
+    <div class="meteo__tab meteo__tab--hidden" id="measurement-log">
+      <h2 class="meteo__heading">Журнал измерений</h2>
+      <div class="log">
+        <table class="log__table">
+          <thead class="log__header">
+            <tr class="log__row">
+              <th class="log__cell log__cell--header">Дата</th>
+              <th class="log__cell log__cell--header">Высота</th>
+              <th class="log__cell log__cell--header">Темп.</th>
+              <th class="log__cell log__cell--header">Давл.</th>
+              <th class="log__cell log__cell--header">Напр. ветра</th>
+              <th class="log__cell log__cell--header">Скорость/Дальность</th>
+            </tr>
+          </thead>
+          <tbody class="log__body">
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
